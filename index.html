@@ -197,7 +197,7 @@
             <div id="projects-loading" class="currencies-loading"></div>
             <div id="projects-main" class="screen-body" hidden>
               <div class="table-scroll">
-                <table class="data-table" style="min-width:720px" aria-label="المشاريع">
+                <table class="data-table" style="min-width:860px" aria-label="المشاريع">
                   <thead>
                     <tr>
                       <th id="projects-th-code" scope="col"></th>
@@ -208,6 +208,7 @@
                       <th id="projects-th-currency" scope="col"></th>
                       <th id="projects-th-status" scope="col"></th>
                       <th id="projects-th-budget" scope="col"></th>
+                      <th id="projects-th-spent" scope="col"></th>
                       <th id="projects-th-actions" scope="col"></th>
                     </tr>
                   </thead>
@@ -331,10 +332,96 @@
             <footer class="budget-editor-footer">
               <span id="budget-unsaved-pill" class="budget-unsaved-pill" hidden></span>
               <div class="budget-editor-footer__actions">
+                <button type="button" class="btn btn--small" id="budget-go-expenses-btn"></button>
                 <button type="button" class="btn" id="budget-cancel-btn"></button>
                 <button type="button" class="btn btn--primary" id="budget-save-btn"></button>
               </div>
             </footer>
+          </div>
+        </section>
+
+        <!-- ===== SCREEN: مصروفات العقد ===== -->
+        <section class="screen" id="screen-project-expenses" data-title="مصروفات العقد">
+          <div class="placeholder-card placeholder-card--fill expenses-editor-card">
+            <header class="budget-editor-topbar">
+              <button type="button" class="budget-editor-back" id="expenses-back-btn">
+                <span class="budget-editor-back__icon" aria-hidden="true">←</span>
+                <span id="expenses-back-label">العودة للعقود</span>
+              </button>
+              <div class="budget-editor-topbar__meta">
+                <p class="budget-editor-kicker" id="expenses-editor-kicker"></p>
+                <h2 class="budget-editor-page-title" id="expenses-page-title"></h2>
+                <p class="budget-editor-contract-meta" id="expenses-contract-meta"></p>
+              </div>
+              <div class="expenses-topbar-actions">
+                <button type="button" class="btn btn--small" id="expenses-go-budget-btn"></button>
+              </div>
+            </header>
+
+            <div id="expenses-success" class="budget-toast" role="status" hidden></div>
+            <div id="expenses-info" class="budget-info-banner" role="status" hidden></div>
+            <div id="expenses-alert" class="setup-error" role="alert" hidden></div>
+
+            <div class="budget-stats expenses-stats">
+              <div class="budget-stat">
+                <span class="budget-stat__label" id="expenses-lbl-budget"></span>
+                <strong class="budget-stat__value" id="expenses-budget-total">0</strong>
+                <span class="budget-stat__currency" id="expenses-currency-1"></span>
+              </div>
+              <div class="budget-stat">
+                <span class="budget-stat__label" id="expenses-lbl-spent"></span>
+                <strong class="budget-stat__value budget-stat__value--lg" id="expenses-spent-total">0</strong>
+                <span class="budget-stat__currency" id="expenses-currency-2"></span>
+              </div>
+              <div class="budget-stat budget-stat--total">
+                <span class="budget-stat__label" id="expenses-lbl-variance"></span>
+                <strong class="budget-stat__value" id="expenses-variance-total">0</strong>
+                <span class="expenses-variance-hint" id="expenses-variance-hint"></span>
+              </div>
+              <div class="budget-stat">
+                <span class="budget-stat__label" id="expenses-lbl-count"></span>
+                <strong class="budget-stat__value" id="expenses-lines-count">0</strong>
+              </div>
+            </div>
+
+            <div class="expenses-toolbar">
+              <button type="button" class="btn btn--primary btn--small" id="expenses-add-btn"></button>
+            </div>
+            <p id="expenses-hint" class="budget-hint"></p>
+
+            <div class="budget-tree-panel expenses-table-panel">
+              <div class="budget-tree-head expenses-table-head" aria-hidden="true">
+                <span id="expenses-th-date"></span>
+                <span id="expenses-th-line"></span>
+                <span id="expenses-th-amount"></span>
+                <span id="expenses-th-desc"></span>
+                <span></span>
+              </div>
+              <div id="expenses-loading" class="budget-loading" hidden></div>
+              <div id="expenses-empty" class="budget-empty" hidden>
+                <p class="budget-empty__title" id="expenses-empty-title"></p>
+                <p class="budget-empty__lead" id="expenses-empty-lead"></p>
+              </div>
+              <div id="expenses-tbody-host" class="expenses-rows"></div>
+            </div>
+
+            <div class="expenses-variance-section" id="expenses-variance-section" hidden>
+              <h3 class="expenses-variance-title" id="expenses-variance-title"></h3>
+              <div class="table-scroll expenses-variance-scroll">
+                <table class="data-table" id="expenses-variance-table">
+                  <thead>
+                    <tr>
+                      <th id="exp-var-th-code" scope="col"></th>
+                      <th id="exp-var-th-name" scope="col"></th>
+                      <th id="exp-var-th-budget" scope="col"></th>
+                      <th id="exp-var-th-spent" scope="col"></th>
+                      <th id="exp-var-th-var" scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="expenses-variance-tbody"></tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -705,7 +792,36 @@
     </div>
   </div>
 
-  <!-- Firebase compat — ملف HTML واحد؛ للاختبار؛ شدّد قواعد Firestore قبل الإنتاج (projects, companies, contractBudgets, …). -->
+  <!-- مصروف عقد: إضافة / تعديل -->
+  <div id="expense-modal" class="setup-modal" role="dialog" aria-modal="true" aria-labelledby="expense-modal-title" hidden>
+    <div class="setup-modal__backdrop" aria-hidden="true"></div>
+    <div class="setup-modal__panel" style="max-width: 480px">
+      <h2 id="expense-modal-title"></h2>
+      <div class="setup-field">
+        <label for="expense-modal-date" id="expense-lbl-date"></label>
+        <input type="date" id="expense-modal-date" dir="ltr" />
+      </div>
+      <div class="setup-field">
+        <label for="expense-modal-line" id="expense-lbl-line"></label>
+        <select id="expense-modal-line"></select>
+      </div>
+      <div class="setup-field">
+        <label for="expense-modal-amount" id="expense-lbl-amount"></label>
+        <input type="number" id="expense-modal-amount" min="0" step="any" inputmode="decimal" dir="ltr" />
+      </div>
+      <div class="setup-field">
+        <label for="expense-modal-desc" id="expense-lbl-desc"></label>
+        <input type="text" id="expense-modal-desc" maxlength="300" />
+      </div>
+      <div id="expense-modal-error" class="setup-error" role="alert" hidden></div>
+      <div class="currencies-toolbar" style="margin-top:1rem">
+        <button type="button" class="btn btn--primary" id="expense-modal-save"></button>
+        <button type="button" class="btn" id="expense-modal-cancel"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase compat — ملف HTML واحد؛ للاختبار؛ شدّد قواعد Firestore قبل الإنتاج (projects, companies, contractBudgets, contractExpenses, …). -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -772,6 +888,7 @@
         companies: { id: "screen-companies", title: "الشركات" },
         projects: { id: "screen-projects", title: "المشاريع" },
         "project-budget": { id: "screen-project-budget", title: "موازنة العقد" },
+        "project-expenses": { id: "screen-project-expenses", title: "مصروفات العقد" },
         currencies: { id: "screen-currencies", title: "العملات" },
         "fx-rates": { id: "screen-fx-rates", title: "أسعار الصرف" },
         users: { id: "screen-users", title: "المستخدمون" },
@@ -789,6 +906,7 @@
             companies: "الشركات",
             projects: "المشاريع",
             "project-budget": "موازنة العقد",
+            "project-expenses": "مصروفات العقد",
             currencies: "العملات",
             "fx-rates": "أسعار الصرف",
             users: "المستخدمون",
@@ -799,6 +917,7 @@
             companies: "الشركات",
             projects: "المشاريع",
             "project-budget": "موازنة العقد",
+            "project-expenses": "مصروفات العقد",
             currencies: "العملات",
             "fx-rates": "أسعار الصرف",
             users: "المستخدمون",
@@ -923,6 +1042,53 @@
             budgetAriaEdit: "تعديل البند",
             budgetAriaDelete: "حذف البند",
             budgetFilterEmpty: "لا توجد بنود تطابق البحث.",
+            budgetGoExpenses: "مصروفات العقد",
+            projectsColSpent: "المنفق",
+            projectsExpensesBtn: "مصروفات",
+            projectExpenseScreenTitle: "مصروفات العقد",
+            expensesBackLabel: "العودة للعقود",
+            expensesEditorKicker: "عقد / مشروع",
+            expensesGoBudget: "الموازنة",
+            expensesLblBudget: "موازنة معتمدة",
+            expensesLblSpent: "إجمالي المنفق",
+            expensesLblVariance: "الانحراف",
+            expensesVarianceUnder: "تحت الموازنة",
+            expensesVarianceOver: "تجاوز الموازنة",
+            expensesVarianceEven: "مطابق",
+            expensesLblCount: "عدد القيود",
+            expensesAddBtn: "إضافة مصروف",
+            expensesHint: "سجّل المصروفات واربطها ببند من موازنة العقد. يُفضّل وجود موازنة معتمدة.",
+            expensesThDate: "التاريخ",
+            expensesThLine: "بند الموازنة",
+            expensesThAmount: "المبلغ",
+            expensesThDesc: "الوصف",
+            expensesEmptyTitle: "لا توجد مصروفات مسجّلة",
+            expensesEmptyLead: "أضف أول قيد مصروف لهذا العقد.",
+            expensesLoading: "جاري التحميل…",
+            expensesNoBudget: "لا توجد موازنة معتمدة — يمكن التسجيل لكن جدول الانحراف يظهر بعد الاعتماد.",
+            expensesModalAdd: "إضافة مصروف",
+            expensesModalEdit: "تعديل مصروف",
+            expenseLblDate: "تاريخ المصروف",
+            expenseLblLine: "بند الموازنة",
+            expenseLblAmount: "المبلغ",
+            expenseLblDesc: "الوصف (اختياري)",
+            expenseSelectLine: "— اختر البند —",
+            expenseErrorDate: "أدخل تاريخ المصروف.",
+            expenseErrorLine: "اختر بند الموازنة.",
+            expenseErrorAmount: "أدخل مبلغًا صالحًا.",
+            expensesDeleteConfirm: "حذف قيد المصروف هذا؟",
+            expensesSaveOk: "تم حفظ المصروف.",
+            expensesVarianceTitle: "انحراف حسب بند الموازنة",
+            expVarThCode: "الرمز",
+            expVarThName: "البند",
+            expVarThBudget: "الموازنة",
+            expVarThSpent: "المنفق",
+            expVarThVar: "الانحراف",
+            projectErrorContractDup: "رقم العقد مستخدم مسبقًا لنفس الشركة.",
+            dashboardStatProjects: "العقود",
+            dashboardStatCompanies: "الشركات",
+            dashboardStatBudgets: "موازنات معتمدة",
+            dashboardStatNoBudget: "عقود بلا موازنة",
             projectsEmpty: "لا توجد مشاريع مسجّلة بعد.",
             projectsLoading: "جاري التحميل…",
             projectsNoSetup: "أكمل «إعداد أول تشغيل» وحدّد العملة الأساسية قبل إدارة المشاريع.",
@@ -1102,6 +1268,7 @@
             companies: "Companies",
             projects: "Projects",
             "project-budget": "Contract budget",
+            "project-expenses": "Contract expenses",
             currencies: "Currencies",
             "fx-rates": "FX Rates",
             users: "Users",
@@ -1226,6 +1393,53 @@
             budgetAriaEdit: "Edit line",
             budgetAriaDelete: "Delete line",
             budgetFilterEmpty: "No lines match your search.",
+            budgetGoExpenses: "Contract expenses",
+            projectsColSpent: "Spent",
+            projectsExpensesBtn: "Expenses",
+            projectExpenseScreenTitle: "Contract expenses",
+            expensesBackLabel: "Back to contracts",
+            expensesEditorKicker: "Contract / project",
+            expensesGoBudget: "Budget",
+            expensesLblBudget: "Approved budget",
+            expensesLblSpent: "Total spent",
+            expensesLblVariance: "Variance",
+            expensesVarianceUnder: "Under budget",
+            expensesVarianceOver: "Over budget",
+            expensesVarianceEven: "On budget",
+            expensesLblCount: "Entries",
+            expensesAddBtn: "Add expense",
+            expensesHint: "Record expenses linked to a budget line. An approved budget is recommended.",
+            expensesThDate: "Date",
+            expensesThLine: "Budget line",
+            expensesThAmount: "Amount",
+            expensesThDesc: "Description",
+            expensesEmptyTitle: "No expenses yet",
+            expensesEmptyLead: "Add the first expense entry for this contract.",
+            expensesLoading: "Loading expenses…",
+            expensesNoBudget: "No approved budget — you can still record expenses; variance table appears after approval.",
+            expensesModalAdd: "Add expense",
+            expensesModalEdit: "Edit expense",
+            expenseLblDate: "Expense date",
+            expenseLblLine: "Budget line",
+            expenseLblAmount: "Amount",
+            expenseLblDesc: "Description (optional)",
+            expenseSelectLine: "— Select line —",
+            expenseErrorDate: "Enter the expense date.",
+            expenseErrorLine: "Select a budget line.",
+            expenseErrorAmount: "Enter a valid amount.",
+            expensesDeleteConfirm: "Delete this expense entry?",
+            expensesSaveOk: "Expense saved.",
+            expensesVarianceTitle: "Variance by budget line",
+            expVarThCode: "Code",
+            expVarThName: "Line",
+            expVarThBudget: "Budget",
+            expVarThSpent: "Spent",
+            expVarThVar: "Variance",
+            projectErrorContractDup: "This contract number is already used for the selected company.",
+            dashboardStatProjects: "Contracts",
+            dashboardStatCompanies: "Companies",
+            dashboardStatBudgets: "Approved budgets",
+            dashboardStatNoBudget: "Contracts without budget",
             projectsEmpty: "No projects yet.",
             projectsLoading: "Loading…",
             projectsNoSetup: "Complete first-run setup and set a base currency before managing projects.",
@@ -1415,6 +1629,7 @@
         SCREENS.companies.title = I18N[currentLang].screens.companies;
         SCREENS.projects.title = I18N[currentLang].screens.projects;
         SCREENS["project-budget"].title = I18N[currentLang].screens["project-budget"];
+        SCREENS["project-expenses"].title = I18N[currentLang].screens["project-expenses"];
         SCREENS.currencies.title = I18N[currentLang].screens.currencies;
         SCREENS["fx-rates"].title = I18N[currentLang].screens["fx-rates"];
         SCREENS.users.title = I18N[currentLang].screens.users;
@@ -1563,6 +1778,8 @@
           if (thpst) thpst.textContent = ui("projectsColStatus");
           var thpbud = document.getElementById("projects-th-budget");
           if (thpbud) thpbud.textContent = ui("projectsColBudget");
+          var thpspent = document.getElementById("projects-th-spent");
+          if (thpspent) thpspent.textContent = ui("projectsColSpent");
           var thpac = document.getElementById("projects-th-actions");
           if (thpac) thpac.textContent = ui("projectsColActions");
           var pmt = document.getElementById("project-modal-title");
@@ -1671,6 +1888,70 @@
           if (bsav && !(budgetEditorState && budgetEditorState.dirty)) bsav.textContent = ui("budgetSave");
           var bpill = document.getElementById("budget-unsaved-pill");
           if (bpill) bpill.textContent = ui("budgetUnsavedPill");
+          var bgoex = document.getElementById("budget-go-expenses-btn");
+          if (bgoex) bgoex.textContent = ui("budgetGoExpenses");
+        }
+
+        var exScr = document.getElementById("screen-project-expenses");
+        if (exScr) {
+          var ebl = document.getElementById("expenses-back-label");
+          if (ebl) ebl.textContent = ui("expensesBackLabel");
+          var ek = document.getElementById("expenses-editor-kicker");
+          if (ek) ek.textContent = ui("expensesEditorKicker");
+          var egb = document.getElementById("expenses-go-budget-btn");
+          if (egb) egb.textContent = ui("expensesGoBudget");
+          var elb = document.getElementById("expenses-lbl-budget");
+          if (elb) elb.textContent = ui("expensesLblBudget");
+          var els = document.getElementById("expenses-lbl-spent");
+          if (els) els.textContent = ui("expensesLblSpent");
+          var elv = document.getElementById("expenses-lbl-variance");
+          if (elv) elv.textContent = ui("expensesLblVariance");
+          var elc = document.getElementById("expenses-lbl-count");
+          if (elc) elc.textContent = ui("expensesLblCount");
+          var eadd = document.getElementById("expenses-add-btn");
+          if (eadd) eadd.textContent = ui("expensesAddBtn");
+          var ehint = document.getElementById("expenses-hint");
+          if (ehint) ehint.textContent = ui("expensesHint");
+          var ethd = document.getElementById("expenses-th-date");
+          if (ethd) ethd.textContent = ui("expensesThDate");
+          var ethl = document.getElementById("expenses-th-line");
+          if (ethl) ethl.textContent = ui("expensesThLine");
+          var etha = document.getElementById("expenses-th-amount");
+          if (etha) etha.textContent = ui("expensesThAmount");
+          var ethds = document.getElementById("expenses-th-desc");
+          if (ethds) ethds.textContent = ui("expensesThDesc");
+          var eet = document.getElementById("expenses-empty-title");
+          if (eet) eet.textContent = ui("expensesEmptyTitle");
+          var eel = document.getElementById("expenses-empty-lead");
+          if (eel) eel.textContent = ui("expensesEmptyLead");
+          var eload = document.getElementById("expenses-loading");
+          if (eload) eload.textContent = ui("expensesLoading");
+          var evt = document.getElementById("expenses-variance-title");
+          if (evt) evt.textContent = ui("expensesVarianceTitle");
+          var evc = document.getElementById("exp-var-th-code");
+          if (evc) evc.textContent = ui("expVarThCode");
+          var evn = document.getElementById("exp-var-th-name");
+          if (evn) evn.textContent = ui("expVarThName");
+          var evb = document.getElementById("exp-var-th-budget");
+          if (evb) evb.textContent = ui("expVarThBudget");
+          var evs = document.getElementById("exp-var-th-spent");
+          if (evs) evs.textContent = ui("expVarThSpent");
+          var evv = document.getElementById("exp-var-th-var");
+          if (evv) evv.textContent = ui("expVarThVar");
+          var emt = document.getElementById("expense-modal-title");
+          if (emt) emt.textContent = ui("expensesModalAdd");
+          var elblD = document.getElementById("expense-lbl-date");
+          if (elblD) elblD.textContent = ui("expenseLblDate");
+          var elblL = document.getElementById("expense-lbl-line");
+          if (elblL) elblL.textContent = ui("expenseLblLine");
+          var elblA = document.getElementById("expense-lbl-amount");
+          if (elblA) elblA.textContent = ui("expenseLblAmount");
+          var elblDs = document.getElementById("expense-lbl-desc");
+          if (elblDs) elblDs.textContent = ui("expenseLblDesc");
+          var ems = document.getElementById("expense-modal-save");
+          if (ems) ems.textContent = ui("companiesModalSave");
+          var emc = document.getElementById("expense-modal-cancel");
+          if (emc) emc.textContent = ui("companiesModalCancel");
         }
 
         // Currencies screen
@@ -1939,6 +2220,16 @@
         if (sbud && sbud.classList.contains("is-visible") && budgetEditorState.projectId) {
           refreshBudgetHeaderMeta();
           renderBudgetTree();
+        }
+        var sex = document.getElementById("screen-project-expenses");
+        if (sex && sex.classList.contains("is-visible") && expenseEditorState.projectId) {
+          refreshExpensesHeaderMeta();
+          renderExpensesList();
+          renderExpensesVarianceTable();
+        }
+        var sdash = document.getElementById("screen-dashboard");
+        if (sdash && sdash.classList.contains("is-visible")) {
+          loadDashboardStats();
         }
       }
 
@@ -4088,7 +4379,8 @@
         companiesList: [],
         docsMap: {},
         baseCode: "",
-        budgetMap: {}
+        budgetMap: {},
+        spentMap: {}
       };
 
       var budgetEditorState = {
@@ -5069,7 +5361,671 @@
               });
           });
         }
+        var goExp = document.getElementById("budget-go-expenses-btn");
+        if (goExp) {
+          goExp.addEventListener("click", function () {
+            if (budgetEditorState.projectId) openProjectExpenses(budgetEditorState.projectId);
+          });
+        }
       })();
+
+      var expenseEditorState = {
+        projectId: null,
+        projectRow: null,
+        expenses: [],
+        budgetDoc: null,
+        budgetLines: [],
+        modalMode: "add",
+        editId: null
+      };
+      var expenseSuccessTimer = null;
+
+      function showExpenseAlert(msg) {
+        var el = document.getElementById("expenses-alert");
+        if (!el) return;
+        el.textContent = msg || "";
+        if (msg) el.removeAttribute("hidden");
+        else el.setAttribute("hidden", "");
+      }
+
+      function showExpenseInfo(msg) {
+        var el = document.getElementById("expenses-info");
+        if (!el) return;
+        el.textContent = msg || "";
+        if (msg) el.removeAttribute("hidden");
+        else el.setAttribute("hidden", "");
+      }
+
+      function showExpenseSuccess(msg) {
+        var el = document.getElementById("expenses-success");
+        if (!el) return;
+        el.textContent = msg || "";
+        if (!msg) {
+          el.setAttribute("hidden", "");
+          return;
+        }
+        el.removeAttribute("hidden");
+        if (expenseSuccessTimer) clearTimeout(expenseSuccessTimer);
+        expenseSuccessTimer = setTimeout(function () {
+          el.setAttribute("hidden", "");
+        }, 3200);
+      }
+
+      function showExpenseModalError(msg) {
+        var el = document.getElementById("expense-modal-error");
+        if (!el) return;
+        el.textContent = msg || "";
+        if (msg) el.removeAttribute("hidden");
+        else el.setAttribute("hidden", "");
+      }
+
+      function getApprovedBudgetTotal(budgetDoc) {
+        if (!budgetDoc || budgetDoc.status !== "approved") return 0;
+        if (typeof budgetDoc.totalAmount === "number" && !isNaN(budgetDoc.totalAmount)) {
+          return budgetDoc.totalAmount;
+        }
+        return computeBudgetTotal(budgetDoc.lines || []);
+      }
+
+      function sumExpensesAmount(expenses) {
+        var sum = 0;
+        (expenses || []).forEach(function (ex) {
+          var a = typeof ex.amount === "number" ? ex.amount : parseFloat(ex.amount);
+          if (!isNaN(a)) sum += a;
+        });
+        return sum;
+      }
+
+      function buildSpentByCode(expenses) {
+        var map = {};
+        (expenses || []).forEach(function (ex) {
+          var c = ex.budgetLineCode != null ? String(ex.budgetLineCode).trim() : "";
+          if (!c) return;
+          var a = typeof ex.amount === "number" ? ex.amount : parseFloat(ex.amount);
+          if (isNaN(a)) a = 0;
+          map[c] = (map[c] || 0) + a;
+        });
+        return map;
+      }
+
+      function refreshExpensesHeaderMeta() {
+        var row = expenseEditorState.projectRow;
+        var d = row && row.d ? row.d : {};
+        var title = document.getElementById("expenses-page-title");
+        if (title) {
+          var nm =
+            currentLang === "en"
+              ? d.nameEn || d.nameAr || ""
+              : d.nameAr || d.nameEn || "";
+          title.textContent = nm || ui("projectExpenseScreenTitle");
+        }
+        var meta = document.getElementById("expenses-contract-meta");
+        if (meta) {
+          var parts = [];
+          if (d.contractNo) parts.push((currentLang === "en" ? "Contract " : "عقد ") + d.contractNo);
+          if (d.code) parts.push((currentLang === "en" ? "Code " : "رمز ") + d.code);
+          var cid = d.companyId != null ? String(d.companyId) : "";
+          var cmap = projectsScreenCache.companyMap || {};
+          if (cid && cmap[cid]) parts.push(cmap[cid]);
+          meta.textContent = parts.join(" · ") || "—";
+        }
+        var cur = d.currencyCode != null && String(d.currencyCode).trim() ? String(d.currencyCode).toUpperCase() : "";
+        var c1 = document.getElementById("expenses-currency-1");
+        var c2 = document.getElementById("expenses-currency-2");
+        if (c1) c1.textContent = cur;
+        if (c2) c2.textContent = cur;
+      }
+
+      function updateExpensesSummaryUi() {
+        var spent = sumExpensesAmount(expenseEditorState.expenses);
+        var budgetTotal = getApprovedBudgetTotal(expenseEditorState.budgetDoc);
+        var variance = budgetTotal - spent;
+        var st = document.getElementById("expenses-spent-total");
+        if (st) st.textContent = formatBudgetAmount(spent);
+        var bt = document.getElementById("expenses-budget-total");
+        if (bt) bt.textContent = formatBudgetAmount(budgetTotal);
+        var vt = document.getElementById("expenses-variance-total");
+        if (vt) {
+          vt.textContent = formatBudgetAmount(Math.abs(variance));
+          vt.classList.toggle("expenses-variance--over", variance < 0);
+          vt.classList.toggle("expenses-variance--under", variance > 0);
+        }
+        var vh = document.getElementById("expenses-variance-hint");
+        if (vh) {
+          if (budgetTotal <= 0 && spent <= 0) vh.textContent = "";
+          else if (Math.abs(variance) < 0.01) vh.textContent = ui("expensesVarianceEven");
+          else if (variance > 0) vh.textContent = ui("expensesVarianceUnder");
+          else vh.textContent = ui("expensesVarianceOver");
+        }
+        var lc = document.getElementById("expenses-lines-count");
+        if (lc) lc.textContent = String(expenseEditorState.expenses.length);
+        if (!expenseEditorState.budgetDoc || expenseEditorState.budgetDoc.status !== "approved") {
+          showExpenseInfo(ui("expensesNoBudget"));
+        } else {
+          showExpenseInfo("");
+        }
+      }
+
+      function renderExpensesList() {
+        var host = document.getElementById("expenses-tbody-host");
+        var emptyEl = document.getElementById("expenses-empty");
+        var headEl = document.querySelector(".expenses-table-head");
+        if (!host) return;
+        var rows = expenseEditorState.expenses.slice().sort(function (a, b) {
+          var da = a.expenseDate || "";
+          var db = b.expenseDate || "";
+          return db.localeCompare(da);
+        });
+        if (emptyEl) {
+          if (!rows.length && !expenseEditorState.loading) {
+            emptyEl.removeAttribute("hidden");
+            if (headEl) headEl.setAttribute("hidden", "");
+          } else {
+            emptyEl.setAttribute("hidden", "");
+            if (headEl) headEl.removeAttribute("hidden");
+          }
+        }
+        host.innerHTML = "";
+        var lineMap = {};
+        (expenseEditorState.budgetLines || []).forEach(function (ln) {
+          lineMap[String(ln.code).trim()] = ln;
+        });
+        rows.forEach(function (ex) {
+          var row = document.createElement("div");
+          row.className = "budget-tree-row expenses-row";
+          var dateCell = document.createElement("span");
+          dateCell.className = "expenses-row__date";
+          dateCell.setAttribute("dir", "ltr");
+          dateCell.textContent = ex.expenseDate || "—";
+          var lineCell = document.createElement("span");
+          lineCell.className = "expenses-row__line";
+          var code = ex.budgetLineCode != null ? String(ex.budgetLineCode).trim() : "";
+          var ln = lineMap[code];
+          lineCell.textContent = code + (ln ? " — " + budgetLineDisplayName(ln) : "");
+          var amtCell = document.createElement("span");
+          amtCell.className = "expenses-row__amount";
+          amtCell.setAttribute("dir", "ltr");
+          amtCell.textContent = formatBudgetAmount(ex.amount);
+          var descCell = document.createElement("span");
+          descCell.className = "expenses-row__desc";
+          descCell.textContent =
+            ex.description != null && String(ex.description).trim() ? String(ex.description).trim() : "—";
+          var acts = document.createElement("div");
+          acts.className = "budget-tree-row__actions";
+          var btnEd = document.createElement("button");
+          btnEd.type = "button";
+          btnEd.className = "budget-icon-btn";
+          btnEd.textContent = "✎";
+          btnEd.setAttribute("data-expense-edit", ex.id);
+          var btnDel = document.createElement("button");
+          btnDel.type = "button";
+          btnDel.className = "budget-icon-btn budget-icon-btn--danger";
+          btnDel.textContent = "×";
+          btnDel.setAttribute("data-expense-delete", ex.id);
+          acts.appendChild(btnEd);
+          acts.appendChild(btnDel);
+          row.appendChild(dateCell);
+          row.appendChild(lineCell);
+          row.appendChild(amtCell);
+          row.appendChild(descCell);
+          row.appendChild(acts);
+          host.appendChild(row);
+        });
+        updateExpensesSummaryUi();
+      }
+
+      function renderExpensesVarianceTable() {
+        var section = document.getElementById("expenses-variance-section");
+        var tbody = document.getElementById("expenses-variance-tbody");
+        if (!section || !tbody) return;
+        var budgetDoc = expenseEditorState.budgetDoc;
+        if (!budgetDoc || budgetDoc.status !== "approved" || !(budgetDoc.lines || []).length) {
+          section.setAttribute("hidden", "");
+          return;
+        }
+        section.removeAttribute("hidden");
+        var spentMap = buildSpentByCode(expenseEditorState.expenses);
+        tbody.innerHTML = "";
+        sortBudgetLines(budgetDoc.lines || []).forEach(function (ln) {
+          var code = String(ln.code || "").trim();
+          if (!code) return;
+          var bAmt = typeof ln.amount === "number" ? ln.amount : parseFloat(ln.amount) || 0;
+          var sAmt = spentMap[code] || 0;
+          var v = bAmt - sAmt;
+          var tr = document.createElement("tr");
+          var td1 = document.createElement("td");
+          td1.setAttribute("dir", "ltr");
+          td1.textContent = code;
+          var td2 = document.createElement("td");
+          td2.textContent = budgetLineDisplayName(ln);
+          var td3 = document.createElement("td");
+          td3.setAttribute("dir", "ltr");
+          td3.textContent = formatBudgetAmount(bAmt);
+          var td4 = document.createElement("td");
+          td4.setAttribute("dir", "ltr");
+          td4.textContent = formatBudgetAmount(sAmt);
+          var td5 = document.createElement("td");
+          td5.setAttribute("dir", "ltr");
+          td5.className = v < 0 ? "expenses-variance--over" : v > 0 ? "expenses-variance--under" : "";
+          td5.textContent = formatBudgetAmount(v);
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          tr.appendChild(td3);
+          tr.appendChild(td4);
+          tr.appendChild(td5);
+          tbody.appendChild(tr);
+        });
+      }
+
+      function loadProjectExpensesScreen() {
+        var F = window.AppFirebase;
+        var pid = expenseEditorState.projectId;
+        showExpenseAlert("");
+        if (!pid) {
+          showExpenseAlert(ui("budgetErrorNoProject"));
+          return;
+        }
+        var row =
+          expenseEditorState.projectRow ||
+          (projectsScreenCache.rows || []).find(function (x) {
+            return x.id === pid;
+          });
+        if (!row) {
+          showExpenseAlert(ui("budgetErrorNoProject"));
+          return;
+        }
+        expenseEditorState.projectRow = row;
+        refreshExpensesHeaderMeta();
+        if (!F || !F.db) {
+          showExpenseAlert(currentLang === "en" ? "Firebase not ready." : "Firebase غير جاهز.");
+          return;
+        }
+        var loadEl = document.getElementById("expenses-loading");
+        if (loadEl) loadEl.removeAttribute("hidden");
+        expenseEditorState.loading = true;
+        Promise.all([
+          F.db.collection("contractExpenses").where("projectId", "==", pid).get(),
+          F.db.collection("contractBudgets").doc(pid).get()
+        ])
+          .then(function (pack) {
+            var expSnap = pack[0];
+            var budSnap = pack[1];
+            var list = [];
+            expSnap.forEach(function (doc) {
+              var data = doc.data() || {};
+              list.push({
+                id: doc.id,
+                projectId: pid,
+                budgetLineCode: data.budgetLineCode != null ? String(data.budgetLineCode) : "",
+                amount: typeof data.amount === "number" ? data.amount : parseFloat(data.amount) || 0,
+                expenseDate: data.expenseDate != null ? String(data.expenseDate) : "",
+                description: data.description != null ? String(data.description) : ""
+              });
+            });
+            expenseEditorState.expenses = list;
+            if (budSnap.exists) {
+              var bd = budSnap.data() || {};
+              expenseEditorState.budgetDoc = {
+                status: bd.status === "approved" ? "approved" : "draft",
+                totalAmount: bd.totalAmount,
+                lines: cloneBudgetLines(bd.lines || [])
+              };
+              expenseEditorState.budgetLines = expenseEditorState.budgetDoc.lines;
+            } else {
+              expenseEditorState.budgetDoc = null;
+              expenseEditorState.budgetLines = [];
+            }
+            renderExpensesList();
+            renderExpensesVarianceTable();
+          })
+          .catch(function (e) {
+            showExpenseAlert(e && e.message ? e.message : String(e));
+          })
+          .then(function () {
+            expenseEditorState.loading = false;
+            if (loadEl) loadEl.setAttribute("hidden", "");
+            renderExpensesList();
+          });
+      }
+
+      function openProjectExpenses(projectId) {
+        expenseEditorState.projectId = projectId;
+        expenseEditorState.projectRow =
+          (projectsScreenCache.rows || []).find(function (x) {
+            return x.id === projectId;
+          }) || null;
+        expenseEditorState.expenses = [];
+        expenseEditorState.budgetDoc = null;
+        expenseEditorState.budgetLines = [];
+        showScreen("project-expenses");
+        loadProjectExpensesScreen();
+      }
+
+      function fillExpenseLineSelect(selectEl) {
+        if (!selectEl) return;
+        selectEl.innerHTML = "";
+        var o0 = document.createElement("option");
+        o0.value = "";
+        o0.textContent = ui("expenseSelectLine");
+        selectEl.appendChild(o0);
+        sortBudgetLines(expenseEditorState.budgetLines || []).forEach(function (ln) {
+          var code = String(ln.code || "").trim();
+          if (!code) return;
+          var opt = document.createElement("option");
+          opt.value = code;
+          opt.textContent = code + " — " + budgetLineDisplayName(ln);
+          selectEl.appendChild(opt);
+        });
+      }
+
+      function openExpenseModalAdd() {
+        expenseEditorState.modalMode = "add";
+        expenseEditorState.editId = null;
+        var ttl = document.getElementById("expense-modal-title");
+        if (ttl) ttl.textContent = ui("expensesModalAdd");
+        fillExpenseLineSelect(document.getElementById("expense-modal-line"));
+        var dt = document.getElementById("expense-modal-date");
+        if (dt) dt.value = todayYyyyMmDd();
+        var am = document.getElementById("expense-modal-amount");
+        if (am) am.value = "";
+        var ds = document.getElementById("expense-modal-desc");
+        if (ds) ds.value = "";
+        showExpenseModalError("");
+        var m = document.getElementById("expense-modal");
+        if (m) {
+          m.removeAttribute("hidden");
+          syncModalBodyScrollLock();
+        }
+      }
+
+      function openExpenseModalEdit(ex) {
+        expenseEditorState.modalMode = "edit";
+        expenseEditorState.editId = ex.id;
+        var ttl = document.getElementById("expense-modal-title");
+        if (ttl) ttl.textContent = ui("expensesModalEdit");
+        fillExpenseLineSelect(document.getElementById("expense-modal-line"));
+        var sel = document.getElementById("expense-modal-line");
+        if (sel) sel.value = ex.budgetLineCode || "";
+        var dt = document.getElementById("expense-modal-date");
+        if (dt) dt.value = ex.expenseDate || todayYyyyMmDd();
+        var am = document.getElementById("expense-modal-amount");
+        if (am) am.value = ex.amount != null ? String(ex.amount) : "0";
+        var ds = document.getElementById("expense-modal-desc");
+        if (ds) ds.value = ex.description || "";
+        showExpenseModalError("");
+        var m = document.getElementById("expense-modal");
+        if (m) {
+          m.removeAttribute("hidden");
+          syncModalBodyScrollLock();
+        }
+      }
+
+      function closeExpenseModal() {
+        var m = document.getElementById("expense-modal");
+        if (m) m.setAttribute("hidden", "");
+        syncModalBodyScrollLock();
+      }
+
+      function deleteContractExpensesForProject(projectId) {
+        var F = window.AppFirebase;
+        if (!F || !F.db || !projectId) return Promise.resolve();
+        return F.db
+          .collection("contractExpenses")
+          .where("projectId", "==", projectId)
+          .get()
+          .then(function (snap) {
+            if (snap.empty) return null;
+            var batch = F.db.batch();
+            snap.forEach(function (doc) {
+              batch.delete(doc.ref);
+            });
+            return batch.commit();
+          });
+      }
+
+      function checkContractNoUnique(companyId, contractNo, excludeProjectId) {
+        var F = window.AppFirebase;
+        var cn = String(contractNo || "").trim().toLowerCase();
+        if (!cn || !companyId) return Promise.resolve(true);
+        return F.db
+          .collection("projects")
+          .get()
+          .then(function (snap) {
+            var dup = false;
+            snap.forEach(function (doc) {
+              if (excludeProjectId && doc.id === excludeProjectId) return;
+              var d = doc.data() || {};
+              if (String(d.companyId || "") !== String(companyId)) return;
+              var ex = d.contractNo != null ? String(d.contractNo).trim().toLowerCase() : "";
+              if (ex && ex === cn) dup = true;
+            });
+            return !dup;
+          });
+      }
+
+      function loadDashboardStats() {
+        var F = window.AppFirebase;
+        if (!F || !F.db) return;
+        Promise.all([
+          F.db.collection("projects").get(),
+          F.db.collection("companies").get(),
+          F.db.collection("contractBudgets").get(),
+          F.db.collection("contractExpenses").get()
+        ])
+          .then(function (pack) {
+            var projSnap = pack[0];
+            var compSnap = pack[1];
+            var budSnap = pack[2];
+            var expSnap = pack[3];
+            var projectCount = projSnap.size;
+            var companyCount = compSnap.size;
+            var approved = 0;
+            var withBudget = 0;
+            var budgetById = {};
+            budSnap.forEach(function (doc) {
+              budgetById[doc.id] = doc.data() || {};
+              withBudget++;
+              if ((doc.data() || {}).status === "approved") approved++;
+            });
+            var noBudget = Math.max(0, projectCount - withBudget);
+            var expenseCount = expSnap.size;
+            var modVal = document.getElementById("stat-modules-value");
+            if (modVal) {
+              modVal.textContent =
+                projectCount +
+                " " +
+                (currentLang === "en" ? "contracts" : "عقد") +
+                " · " +
+                companyCount +
+                " " +
+                (currentLang === "en" ? "companies" : "شركة");
+            }
+            var modHint = document.getElementById("stat-modules-hint");
+            if (modHint) {
+              modHint.textContent =
+                approved +
+                " " +
+                ui("dashboardStatBudgets") +
+                " · " +
+                noBudget +
+                " " +
+                ui("dashboardStatNoBudget");
+            }
+            var repVal = document.getElementById("stat-reports-value");
+            if (repVal) {
+              repVal.textContent =
+                expenseCount + " " + (currentLang === "en" ? "expense entries" : "قيد مصروف");
+            }
+            var n1 = document.getElementById("dashboard-note-1");
+            if (n1) {
+              n1.textContent =
+                (currentLang === "en" ? "Contracts: " : "العقود: ") +
+                projectCount +
+                " · " +
+                (currentLang === "en" ? "Companies: " : "الشركات: ") +
+                companyCount;
+            }
+            var n2 = document.getElementById("dashboard-note-2");
+            if (n2) {
+              n2.textContent =
+                ui("dashboardStatBudgets") +
+                ": " +
+                approved +
+                " · " +
+                ui("dashboardStatNoBudget") +
+                ": " +
+                noBudget;
+            }
+          })
+          .catch(function () {});
+      }
+
+      (function wireExpenseEditor() {
+        var back = document.getElementById("expenses-back-btn");
+        if (back) {
+          back.addEventListener("click", function () {
+            showScreen("projects");
+          });
+        }
+        var goBud = document.getElementById("expenses-go-budget-btn");
+        if (goBud) {
+          goBud.addEventListener("click", function () {
+            if (expenseEditorState.projectId) openProjectBudget(expenseEditorState.projectId);
+          });
+        }
+        var addBtn = document.getElementById("expenses-add-btn");
+        if (addBtn) {
+          addBtn.addEventListener("click", function () {
+            if (!(expenseEditorState.budgetLines || []).length) {
+              showExpenseAlert(ui("expensesNoBudget"));
+              return;
+            }
+            openExpenseModalAdd();
+          });
+        }
+        var host = document.getElementById("expenses-tbody-host");
+        if (host) {
+          host.addEventListener("click", function (ev) {
+            var t = ev.target;
+            if (!t) return;
+            function closestAttr(name) {
+              var el = t;
+              while (el && el !== host) {
+                if (el.getAttribute && el.getAttribute(name)) return el;
+                el = el.parentElement;
+              }
+              return null;
+            }
+            var edEl = closestAttr("data-expense-edit");
+            if (edEl) {
+              var eid = edEl.getAttribute("data-expense-edit");
+              var ex = expenseEditorState.expenses.find(function (x) {
+                return x.id === eid;
+              });
+              if (ex) openExpenseModalEdit(ex);
+              return;
+            }
+            var delEl = closestAttr("data-expense-delete");
+            if (delEl) {
+              var did = delEl.getAttribute("data-expense-delete");
+              if (!confirm(ui("expensesDeleteConfirm"))) return;
+              var F = window.AppFirebase;
+              if (!F || !F.db) return;
+              F.db
+                .collection("contractExpenses")
+                .doc(did)
+                .delete()
+                .then(function () {
+                  var spr = document.getElementById("screen-projects");
+                  if (spr && spr.classList.contains("is-visible")) {
+                    loadProjectsScreen();
+                  }
+                  return loadProjectExpensesScreen();
+                })
+                .catch(function (e) {
+                  showExpenseAlert(e && e.message ? e.message : String(e));
+                });
+            }
+          });
+        }
+        var expSave = document.getElementById("expense-modal-save");
+        if (expSave) {
+          expSave.addEventListener("click", function () {
+            var F = window.AppFirebase;
+            if (!F || !F.db) return;
+            var pid = expenseEditorState.projectId;
+            var dateVal = (document.getElementById("expense-modal-date").value || "").trim();
+            var lineCode = (document.getElementById("expense-modal-line").value || "").trim();
+            var amount = parseFloat(document.getElementById("expense-modal-amount").value);
+            var desc = (document.getElementById("expense-modal-desc").value || "").trim();
+            if (!dateVal) {
+              showExpenseModalError(ui("expenseErrorDate"));
+              return;
+            }
+            if (!lineCode) {
+              showExpenseModalError(ui("expenseErrorLine"));
+              return;
+            }
+            if (isNaN(amount) || amount < 0) {
+              showExpenseModalError(ui("expenseErrorAmount"));
+              return;
+            }
+            showExpenseModalError("");
+            expSave.disabled = true;
+            var payload = {
+              projectId: pid,
+              budgetLineCode: lineCode,
+              amount: amount,
+              expenseDate: dateVal,
+              description: desc,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            var promise;
+            if (expenseEditorState.modalMode === "edit" && expenseEditorState.editId) {
+              promise = F.db.collection("contractExpenses").doc(expenseEditorState.editId).set(payload, {
+                merge: true
+              });
+            } else {
+              payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+              promise = F.db.collection("contractExpenses").add(payload);
+            }
+            promise
+              .then(function () {
+                closeExpenseModal();
+                showExpenseSuccess(ui("expensesSaveOk"));
+                var spr = document.getElementById("screen-projects");
+                if (spr && spr.classList.contains("is-visible")) {
+                  loadProjectsScreen();
+                }
+                return loadProjectExpensesScreen();
+              })
+              .catch(function (e) {
+                showExpenseModalError(e && e.message ? e.message : String(e));
+              })
+              .then(function () {
+                expSave.disabled = false;
+              });
+          });
+        }
+        var expCancel = document.getElementById("expense-modal-cancel");
+        if (expCancel) {
+          expCancel.addEventListener("click", function () {
+            closeExpenseModal();
+            showExpenseModalError("");
+          });
+        }
+        var expModal = document.getElementById("expense-modal");
+        if (expModal) {
+          var bd = expModal.querySelector(".setup-modal__backdrop");
+          if (bd) {
+            bd.addEventListener("click", function () {
+              closeExpenseModal();
+              showExpenseModalError("");
+            });
+          }
+        }
+      })();
+
       var projectModalMode = "add";
       var projectEditId = null;
 
@@ -5311,7 +6267,8 @@
               F.db.collection("companies").get(),
               fetchCurrencyDocsMap(F.db),
               seedCurrenciesIfMissing(F.db),
-              F.db.collection("contractBudgets").get()
+              F.db.collection("contractBudgets").get(),
+              F.db.collection("contractExpenses").get()
             ]);
           })
           .then(function (pack) {
@@ -5321,6 +6278,7 @@
             var compSnap = pack[1];
             var docsMap = pack[2];
             var budgetSnap = pack[4];
+            var expenseSnap = pack[5];
 
             var budgetMap = {};
             if (budgetSnap && budgetSnap.forEach) {
@@ -5332,7 +6290,19 @@
                 };
               });
             }
+            var spentMap = {};
+            if (expenseSnap && expenseSnap.forEach) {
+              expenseSnap.forEach(function (edoc) {
+                var ed = edoc.data() || {};
+                var pid = ed.projectId != null ? String(ed.projectId) : "";
+                if (!pid) return;
+                var a = typeof ed.amount === "number" ? ed.amount : parseFloat(ed.amount);
+                if (isNaN(a)) a = 0;
+                spentMap[pid] = (spentMap[pid] || 0) + a;
+              });
+            }
             projectsScreenCache.budgetMap = budgetMap;
+            projectsScreenCache.spentMap = spentMap;
 
             var companyMap = {};
             var companiesList = [];
@@ -5429,8 +6399,18 @@
                 bamt.textContent = formatBudgetAmount(binfo.totalAmount);
                 td8.appendChild(bamt);
               }
+              var tdSpent = document.createElement("td");
+              tdSpent.className = "budget-cell";
+              tdSpent.setAttribute("dir", "ltr");
+              var spentVal = spentMap[row.id] || 0;
+              tdSpent.textContent = spentVal > 0 ? formatBudgetAmount(spentVal) : "—";
               var td9 = document.createElement("td");
               td9.className = "table-actions";
+              var btnExp = document.createElement("button");
+              btnExp.type = "button";
+              btnExp.className = "btn btn--small btn--expense";
+              btnExp.textContent = ui("projectsExpensesBtn");
+              btnExp.setAttribute("data-project-expenses", row.id);
               var btnBud = document.createElement("button");
               btnBud.type = "button";
               btnBud.className = "btn btn--small btn--budget";
@@ -5446,6 +6426,7 @@
               btnDel.className = "btn btn--small btn--danger";
               btnDel.textContent = ui("projectsDelete");
               btnDel.setAttribute("data-project-delete", row.id);
+              td9.appendChild(btnExp);
               td9.appendChild(btnBud);
               td9.appendChild(btnEd);
               td9.appendChild(btnDel);
@@ -5457,6 +6438,7 @@
               tr.appendChild(td6);
               tr.appendChild(td7);
               tr.appendChild(td8);
+              tr.appendChild(tdSpent);
               tr.appendChild(td9);
               tbody.appendChild(tr);
             });
@@ -5468,8 +6450,13 @@
               var t = ev.target;
               if (!(t && t.getAttribute)) return;
               var budgetId = t.getAttribute("data-project-budget");
+              var expensesId = t.getAttribute("data-project-expenses");
               var editId = t.getAttribute("data-project-edit");
               var delId = t.getAttribute("data-project-delete");
+              if (expensesId) {
+                openProjectExpenses(expensesId);
+                return;
+              }
               if (budgetId) {
                 openProjectBudget(budgetId);
                 return;
@@ -5489,6 +6476,12 @@
                   .delete()
                   .then(function () {
                     return F.db.collection("contractBudgets").doc(delId).delete();
+                  })
+                  .catch(function () {
+                    return null;
+                  })
+                  .then(function () {
+                    return deleteContractExpensesForProject(delId);
                   })
                   .catch(function () {
                     return null;
@@ -5578,19 +6571,25 @@
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 
-        var promise;
-        if (projectModalMode === "edit" && projectEditId) {
-          promise = F.db.collection("projects").doc(projectEditId).set(payload, { merge: true });
-        } else {
-          payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-          promise = F.db
-            .collection("projects")
-            .get()
-            .then(function (snap) {
-              payload.code = nextSerialCodeFromSnapshot(snap);
-              return F.db.collection("projects").add(payload);
-            });
-        }
+        var promise = checkContractNoUnique(companyId, contractNo, projectModalMode === "edit" ? projectEditId : null).then(
+          function (ok) {
+            if (!ok) {
+              showProjectModalError(ui("projectErrorContractDup"));
+              throw new Error("duplicate contract");
+            }
+            if (projectModalMode === "edit" && projectEditId) {
+              return F.db.collection("projects").doc(projectEditId).set(payload, { merge: true });
+            }
+            payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            return F.db
+              .collection("projects")
+              .get()
+              .then(function (snap) {
+                payload.code = nextSerialCodeFromSnapshot(snap);
+                return F.db.collection("projects").add(payload);
+              });
+          }
+        );
 
         promise
           .then(function () {
@@ -5626,6 +6625,10 @@
 
         if (key === "dashboard") {
           refreshDashboardSignInHint();
+          loadDashboardStats();
+        }
+        if (key === "project-expenses" && expenseEditorState.projectId) {
+          loadProjectExpensesScreen();
         }
         if (key === "companies") {
           loadCompaniesScreen();
@@ -5687,6 +6690,8 @@
         loadCompaniesScreen: loadCompaniesScreen,
         loadProjectsScreen: loadProjectsScreen,
         openProjectBudget: openProjectBudget,
+        openProjectExpenses: openProjectExpenses,
+        loadDashboardStats: loadDashboardStats,
         loadFxRatesScreen: loadFxRatesScreen,
         getFxRateToBaseForDate: function (currencyCode, asOfDateStr) {
           var F = window.AppFirebase;
@@ -5732,6 +6737,9 @@
             .then(function () {
               updateAuthHeader(user);
               refreshAdminNavVisibility();
+              if (user) {
+                loadDashboardStats();
+              }
               var active = document.querySelector(".nav-btn.is-active");
               if (active && active.getAttribute("data-screen") === "users") {
                 loadUsersScreen();
