@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="use-latin-numerals">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -437,7 +437,7 @@
                   </div>
                   <div class="setup-field">
                     <label for="budget-line-amount" id="budget-lbl-line-amount"></label>
-                    <input type="number" id="budget-line-amount" min="0" step="any" inputmode="decimal" dir="ltr" />
+                    <input type="number" id="budget-line-amount" min="0" step="any" inputmode="decimal" dir="ltr" lang="en" class="num-latin" />
                   </div>
                   <div class="table-actions">
                     <button type="button" class="btn btn--primary btn--small" id="budget-line-save-btn"></button>
@@ -476,83 +476,102 @@
               </div>
             </header>
 
-            <div id="expenses-success" class="budget-toast" role="status" hidden></div>
-            <div id="expenses-info" class="budget-info-banner" role="status" hidden></div>
-            <div id="expenses-alert" class="setup-error" role="alert" hidden></div>
+            <div class="expenses-body">
+              <div class="expenses-alerts">
+                <div id="expenses-success" class="budget-toast" role="status" hidden></div>
+                <div id="expenses-info" class="budget-info-banner" role="status" hidden></div>
+                <div id="expenses-alert" class="setup-error" role="alert" hidden></div>
+              </div>
 
-            <div class="budget-stats expenses-stats">
-              <div class="budget-stat">
-                <span class="budget-stat__label" id="expenses-lbl-budget"></span>
-                <strong class="budget-stat__value" id="expenses-budget-total">0</strong>
-                <span class="budget-stat__currency" id="expenses-currency-1"></span>
-              </div>
-              <div class="budget-stat">
-                <span class="budget-stat__label" id="expenses-lbl-spent"></span>
-                <strong class="budget-stat__value budget-stat__value--lg" id="expenses-spent-total">0</strong>
-                <span class="budget-stat__currency" id="expenses-currency-2"></span>
-              </div>
-              <div class="budget-stat budget-stat--total">
-                <span class="budget-stat__label" id="expenses-lbl-variance"></span>
-                <strong class="budget-stat__value" id="expenses-variance-total">0</strong>
-                <span class="expenses-variance-hint" id="expenses-variance-hint"></span>
-              </div>
-              <div class="budget-stat">
-                <span class="budget-stat__label" id="expenses-lbl-count"></span>
-                <strong class="budget-stat__value" id="expenses-lines-count">0</strong>
-              </div>
-            </div>
-
-            <div class="expenses-entry-panel">
-              <div class="expenses-entry-toolbar">
-                <div class="expenses-entry-toolbar__date">
-                  <label for="expenses-asof-date" id="expenses-lbl-asof-date"></label>
-                  <input type="date" id="expenses-asof-date" dir="ltr" />
+              <div class="expenses-kpi-grid budget-stats expenses-stats">
+                <div class="budget-stat expenses-kpi expenses-kpi--budget">
+                  <span class="budget-stat__label" id="expenses-lbl-budget"></span>
+                  <div class="expenses-kpi__value-row">
+                    <strong class="budget-stat__value" id="expenses-budget-total">0</strong>
+                    <span class="budget-stat__currency" id="expenses-currency-1"></span>
+                  </div>
                 </div>
-                <button type="button" class="btn btn--primary btn--small" id="expenses-save-grid-btn"></button>
+                <div class="budget-stat expenses-kpi expenses-kpi--spent">
+                  <span class="budget-stat__label" id="expenses-lbl-spent"></span>
+                  <div class="expenses-kpi__value-row">
+                    <strong class="budget-stat__value budget-stat__value--lg" id="expenses-spent-total">0</strong>
+                    <span class="budget-stat__currency" id="expenses-currency-2"></span>
+                  </div>
+                </div>
+                <div class="budget-stat budget-stat--total expenses-kpi expenses-kpi--variance">
+                  <span class="budget-stat__label" id="expenses-lbl-variance"></span>
+                  <strong class="budget-stat__value" id="expenses-variance-total">0</strong>
+                  <span class="expenses-variance-hint" id="expenses-variance-hint"></span>
+                </div>
+                <div class="budget-stat expenses-kpi expenses-kpi--snapshots">
+                  <span class="budget-stat__label" id="expenses-lbl-count"></span>
+                  <strong class="budget-stat__value" id="expenses-lines-count">0</strong>
+                </div>
               </div>
-              <p id="expenses-hint" class="budget-hint"></p>
-              <div id="expenses-entry-loading" class="budget-loading" hidden></div>
-              <div id="expenses-entry-empty" class="budget-empty" hidden>
-                <p class="budget-empty__title" id="expenses-entry-empty-title"></p>
-                <p class="budget-empty__lead" id="expenses-entry-empty-lead"></p>
-              </div>
-              <div class="table-scroll expenses-entry-scroll" id="expenses-entry-wrap">
-                <table class="data-table data-table--list expenses-entry-table">
-                  <thead>
-                    <tr>
-                      <th id="expenses-entry-th-code" scope="col" class="col-code"></th>
-                      <th id="expenses-entry-th-name" scope="col"></th>
-                      <th id="expenses-entry-th-budget" scope="col" class="col-num"></th>
-                      <th id="expenses-entry-th-spent" scope="col" class="col-spent"></th>
-                      <th id="expenses-entry-th-var" scope="col" class="col-num"></th>
-                    </tr>
-                  </thead>
-                  <tbody id="expenses-entry-tbody"></tbody>
-                </table>
-              </div>
-            </div>
 
-            <div class="expenses-history" id="expenses-history-section" hidden>
-              <h3 class="expenses-history__title" id="expenses-history-title"></h3>
-              <ul class="expenses-history__list" id="expenses-history-list"></ul>
-            </div>
+              <section class="expenses-card expenses-card--entry" aria-labelledby="expenses-entry-section-title">
+                <header class="expenses-card__head">
+                  <div class="expenses-card__intro">
+                    <h3 class="expenses-card__title" id="expenses-entry-section-title"></h3>
+                    <p id="expenses-hint" class="expenses-card__hint"></p>
+                  </div>
+                  <div class="expenses-entry-toolbar">
+                    <div class="expenses-entry-toolbar__date">
+                      <label for="expenses-asof-date" id="expenses-lbl-asof-date"></label>
+                      <input type="date" id="expenses-asof-date" dir="ltr" lang="en" class="num-latin expenses-date-input" />
+                    </div>
+                    <button type="button" class="btn btn--primary expenses-save-btn" id="expenses-save-grid-btn"></button>
+                  </div>
+                </header>
+                <div class="expenses-card__body">
+                  <div id="expenses-entry-loading" class="expenses-loading" hidden></div>
+                  <div id="expenses-entry-empty" class="expenses-empty" hidden>
+                    <div class="expenses-empty__icon" aria-hidden="true">&#128203;</div>
+                    <p class="expenses-empty__title" id="expenses-entry-empty-title"></p>
+                    <p class="expenses-empty__lead" id="expenses-entry-empty-lead"></p>
+                  </div>
+                  <div class="table-scroll expenses-entry-scroll" id="expenses-entry-wrap">
+                    <table class="data-table data-table--list expenses-entry-table">
+                      <thead>
+                        <tr>
+                          <th id="expenses-entry-th-code" scope="col" class="col-code"></th>
+                          <th id="expenses-entry-th-name" scope="col" class="col-name"></th>
+                          <th id="expenses-entry-th-budget" scope="col" class="col-num"></th>
+                          <th id="expenses-entry-th-spent" scope="col" class="col-spent"></th>
+                          <th id="expenses-entry-th-var" scope="col" class="col-var"></th>
+                        </tr>
+                      </thead>
+                      <tbody id="expenses-entry-tbody"></tbody>
+                    </table>
+                  </div>
+                </div>
+                <footer class="expenses-history" id="expenses-history-section" hidden>
+                  <h4 class="expenses-history__title" id="expenses-history-title"></h4>
+                  <ul class="expenses-history__list" id="expenses-history-list"></ul>
+                </footer>
+              </section>
 
-            <div class="expenses-variance-section" id="expenses-variance-section" hidden>
-              <h3 class="expenses-variance-title" id="expenses-variance-title"></h3>
-              <div class="table-scroll expenses-variance-scroll">
-                <table class="data-table" id="expenses-variance-table">
-                  <thead>
-                    <tr>
-                      <th id="exp-var-th-code" scope="col"></th>
-                      <th id="exp-var-th-name" scope="col"></th>
-                      <th id="exp-var-th-budget" scope="col"></th>
-                      <th id="exp-var-th-spent" scope="col"></th>
-                      <th id="exp-var-th-var" scope="col"></th>
-                    </tr>
-                  </thead>
-                  <tbody id="expenses-variance-tbody"></tbody>
-                </table>
-              </div>
+              <section class="expenses-card expenses-card--variance" id="expenses-variance-section" hidden aria-labelledby="expenses-variance-title">
+                <header class="expenses-card__head expenses-card__head--compact">
+                  <h3 class="expenses-card__title" id="expenses-variance-title"></h3>
+                </header>
+                <div class="expenses-card__body expenses-card__body--flush">
+                  <div class="table-scroll expenses-variance-scroll">
+                    <table class="data-table data-table--list expenses-variance-table" id="expenses-variance-table">
+                      <thead>
+                        <tr>
+                          <th id="exp-var-th-code" scope="col" class="col-code"></th>
+                          <th id="exp-var-th-name" scope="col" class="col-name"></th>
+                          <th id="exp-var-th-budget" scope="col" class="col-num"></th>
+                          <th id="exp-var-th-spent" scope="col" class="col-num"></th>
+                          <th id="exp-var-th-var" scope="col" class="col-var"></th>
+                        </tr>
+                      </thead>
+                      <tbody id="expenses-variance-tbody"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </section>
             </div>
           </div>
         </section>
@@ -744,7 +763,7 @@
       </div>
       <div class="setup-field">
         <label for="currency-modal-units" id="currency-modal-units-label">المعادل (رقم)</label>
-        <input type="number" id="currency-modal-units" min="0" step="any" inputmode="decimal" placeholder="مثال: 1310" />
+        <input type="number" id="currency-modal-units" min="0" step="any" inputmode="decimal" dir="ltr" lang="en" class="num-latin" placeholder="1310" />
         <p class="setup-hint" id="currency-modal-units-hint" style="margin-top:0.35rem;margin-bottom:0"></p>
       </div>
       <div class="setup-field">
@@ -757,7 +776,7 @@
       </div>
       <div class="setup-field">
         <label for="currency-modal-decimals">المنازل العشرية</label>
-        <input type="number" id="currency-modal-decimals" min="0" max="8" step="1" />
+        <input type="number" id="currency-modal-decimals" min="0" max="8" step="1" dir="ltr" lang="en" class="num-latin" />
       </div>
       <div id="currency-modal-error" class="setup-error" role="alert" hidden></div>
       <div class="currencies-toolbar" style="margin-top:1rem">
@@ -778,11 +797,11 @@
       </div>
       <div class="setup-field">
         <label for="fx-modal-date" id="fx-modal-lbl-date"></label>
-        <input type="date" id="fx-modal-date" />
+        <input type="date" id="fx-modal-date" dir="ltr" lang="en" class="num-latin" />
       </div>
       <div class="setup-field">
         <label for="fx-modal-rate" id="fx-modal-lbl-rate"></label>
-        <input type="number" id="fx-modal-rate" min="0" step="any" inputmode="decimal" />
+        <input type="number" id="fx-modal-rate" min="0" step="any" inputmode="decimal" dir="ltr" lang="en" class="num-latin" />
         <p class="setup-hint" id="fx-modal-hint" style="margin-top:0.35rem;margin-bottom:0"></p>
       </div>
       <div id="fx-modal-error" class="setup-error" role="alert" hidden></div>
@@ -936,7 +955,7 @@
       <h2 id="expense-modal-title"></h2>
       <div class="setup-field">
         <label for="expense-modal-date" id="expense-lbl-date"></label>
-        <input type="date" id="expense-modal-date" dir="ltr" />
+        <input type="date" id="expense-modal-date" dir="ltr" lang="en" class="num-latin" />
       </div>
       <div class="setup-field">
         <label for="expense-modal-line" id="expense-lbl-line"></label>
@@ -944,7 +963,7 @@
       </div>
       <div class="setup-field">
         <label for="expense-modal-amount" id="expense-lbl-amount"></label>
-        <input type="number" id="expense-modal-amount" min="0" step="any" inputmode="decimal" dir="ltr" />
+        <input type="number" id="expense-modal-amount" min="0" step="any" inputmode="decimal" dir="ltr" lang="en" class="num-latin" />
       </div>
       <div class="setup-field">
         <label for="expense-modal-desc" id="expense-lbl-desc"></label>
@@ -1254,6 +1273,7 @@
             expensesEntryThBudget: "الموازنة",
             expensesEntryThSpent: "المنفق التراكمي",
             expensesEntryThVar: "الانحراف",
+            expensesEntrySectionTitle: "إدخال الأرصدة التراكمية",
             expensesEntryEmptyTitle: "لا توجد بنود فرعية",
             expensesEntryEmptyLead: "اعتمد موازنة العقد وأضف بنوداً فرعية لتسجيل المصروفات.",
             expensesLoading: "جاري التحميل…",
@@ -1386,7 +1406,7 @@
             currencyUnitsHint: "أدخل رقمًا موجبًا للتعادل (كل 1 أساس = …).",
             currencyModalSave: "حفظ",
             currencyModalCancel: "إلغاء",
-            currencyUnitsPlaceholder: "مثال: 1310",
+            currencyUnitsPlaceholder: "1310",
             currencyEditTitle: "تعديل تعريف العملة",
             currencyUnitsLabelQuestion: function (base, other) {
               return "كل 1 " + base + " يساوي كم من " + other + "؟";
@@ -1645,6 +1665,7 @@
             expensesEntryThBudget: "Budget",
             expensesEntryThSpent: "Cumulative spent",
             expensesEntryThVar: "Variance",
+            expensesEntrySectionTitle: "Cumulative balance entry",
             expensesEntryEmptyTitle: "No sub-lines",
             expensesEntryEmptyLead: "Approve the contract budget and add sub-lines before recording expenses.",
             expensesLoading: "Loading expenses…",
@@ -1858,6 +1879,7 @@
         currentLang = lang === "en" ? "en" : "ar";
         document.documentElement.setAttribute("lang", currentLang);
         document.documentElement.setAttribute("dir", currentLang === "en" ? "ltr" : "rtl");
+        document.documentElement.classList.add("use-latin-numerals");
 
         // Update screen titles used by showScreen()
         SCREENS.dashboard.title = I18N[currentLang].screens.dashboard;
@@ -2198,6 +2220,8 @@
           if (elad) elad.textContent = ui("expensesLblAsOfDate");
           var esg = document.getElementById("expenses-save-grid-btn");
           if (esg) esg.textContent = ui("expensesSaveGrid");
+          var eest = document.getElementById("expenses-entry-section-title");
+          if (eest) eest.textContent = ui("expensesEntrySectionTitle");
           var ehint = document.getElementById("expenses-hint");
           if (ehint) ehint.textContent = ui("expensesHint");
           var eetc = document.getElementById("expenses-entry-th-code");
@@ -3020,20 +3044,24 @@
         rows.forEach(function (r) {
           var tr = document.createElement("tr");
           var tdDate = document.createElement("td");
+          markLatinNumberEl(tdDate);
           tdDate.textContent = r.rateDate || "—";
           var tdCur = document.createElement("td");
           tdCur.textContent = r.currencyCode || "—";
           var tdRate = document.createElement("td");
-          tdRate.textContent = isFinite(r.rateToBase) ? String(r.rateToBase) : "—";
+          markLatinNumberEl(tdRate);
+          tdRate.textContent = isFinite(r.rateToBase) ? formatNumber(r.rateToBase, 0, 8) : "—";
 
           var tdRef = document.createElement("td");
           var cd = docsMap[r.currencyCode];
           var defU = cd && cd.unitsPerOneBase;
           var un = typeof defU === "number" ? defU : parseFloat(String(defU || "").replace(/,/g, "."), 10);
+          markLatinNumberEl(tdRef);
           if (un > 0 && isFinite(un)) {
-            tdRef.textContent = String(un);
+            tdRef.textContent = formatNumber(un, 0, 8);
           } else {
-            tdRef.textContent = isFinite(r.rateToBase) && r.rateToBase > 0 ? String(1 / r.rateToBase) : "—";
+            tdRef.textContent =
+              isFinite(r.rateToBase) && r.rateToBase > 0 ? formatNumber(1 / r.rateToBase, 0, 8) : "—";
           }
 
           var tdAct = document.createElement("td");
@@ -4429,9 +4457,18 @@
         companiesScreenCache.rows.forEach(function (row) {
           if (!(companiesScreenCache.projectCountByCompany[row.id] || 0)) idle++;
         });
-        if (totalEl) totalEl.textContent = String(n);
-        if (contractsEl) contractsEl.textContent = String(companiesScreenCache.totalProjects || 0);
-        if (idleEl) idleEl.textContent = String(idle);
+        if (totalEl) {
+          markLatinNumberEl(totalEl);
+          totalEl.textContent = formatInteger(n);
+        }
+        if (contractsEl) {
+          markLatinNumberEl(contractsEl);
+          contractsEl.textContent = formatInteger(companiesScreenCache.totalProjects || 0);
+        }
+        if (idleEl) {
+          markLatinNumberEl(idleEl);
+          idleEl.textContent = formatInteger(idle);
+        }
       }
 
       function setListBlockVisible(el, show) {
@@ -4560,7 +4597,8 @@
           var badge = document.createElement("span");
           badge.className = "cell-count" + (cnt > 0 ? " cell-count--active" : "");
           badge.setAttribute("dir", "ltr");
-          badge.textContent = String(cnt);
+          markLatinNumberEl(badge);
+          badge.textContent = formatInteger(cnt);
           badge.title =
             cnt > 0
               ? currentLang === "en"
@@ -4960,16 +4998,46 @@
         return sum;
       }
 
-      function formatBudgetAmount(n) {
+      var NUMBER_LOCALE = "en-US";
+
+      function toLatinDigits(str) {
+        var s = String(str);
+        var eastern = "٠١٢٣٤٥٦٧٨٩";
+        var persian = "۰۱۲۳۴۵۶۷۸۹";
+        for (var i = 0; i < 10; i++) {
+          s = s.split(eastern.charAt(i)).join(String(i));
+          s = s.split(persian.charAt(i)).join(String(i));
+        }
+        return s;
+      }
+
+      function formatNumber(n, minFrac, maxFrac) {
         var v = typeof n === "number" && !isNaN(n) ? n : 0;
         try {
-          return v.toLocaleString(currentLang === "en" ? "en-US" : "ar-IQ", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2
-          });
+          return toLatinDigits(
+            v.toLocaleString(NUMBER_LOCALE, {
+              minimumFractionDigits: minFrac != null ? minFrac : 0,
+              maximumFractionDigits: maxFrac != null ? maxFrac : 2
+            })
+          );
         } catch (e) {
-          return String(Math.round(v * 100) / 100);
+          return toLatinDigits(String(Math.round(v * 100) / 100));
         }
+      }
+
+      function formatBudgetAmount(n) {
+        return formatNumber(n, 0, 2);
+      }
+
+      function formatInteger(n) {
+        return formatNumber(n, 0, 0);
+      }
+
+      function markLatinNumberEl(el) {
+        if (!el) return;
+        el.setAttribute("lang", "en");
+        el.classList.add("num-latin");
+        if (!el.getAttribute("dir")) el.setAttribute("dir", "ltr");
       }
 
       function budgetLineDisplayName(ln) {
@@ -5206,7 +5274,10 @@
         }
         var lines = budgetEditorState.lines;
         var lc = document.getElementById("budget-lines-count");
-        if (lc) lc.textContent = String(lines.length);
+        if (lc) {
+          markLatinNumberEl(lc);
+          lc.textContent = formatInteger(lines.length);
+        }
         var total = computeBudgetTotal(lines);
         var td = document.getElementById("budget-total-display");
         if (td) td.textContent = formatBudgetAmount(total);
@@ -5407,21 +5478,21 @@
           if (hasKids) {
             var rollup = document.createElement("span");
             rollup.className = "budget-tree-row__rollup";
-            rollup.setAttribute("dir", "ltr");
+            markLatinNumberEl(rollup);
             rollup.title = ui("budgetRollupLabel");
             rollup.textContent = formatBudgetAmount(budgetRollupTotal(allLines, ln.code));
             amountCell.appendChild(rollup);
           } else if (ro) {
             var amtRead = document.createElement("span");
             amtRead.className = "budget-tree-row__amount-read";
-            amtRead.setAttribute("dir", "ltr");
+            markLatinNumberEl(amtRead);
             amtRead.textContent = formatBudgetAmount(ln.amount);
             amountCell.appendChild(amtRead);
           } else {
             var amtIn = document.createElement("input");
             amtIn.type = "text";
             amtIn.className = "budget-tree-row__amount-input";
-            amtIn.setAttribute("dir", "ltr");
+            markLatinNumberEl(amtIn);
             amtIn.inputMode = "decimal";
             amtIn.value = ln.amount != null ? String(ln.amount) : "0";
             amtIn.setAttribute("data-budget-amount", ln.id);
@@ -5443,7 +5514,8 @@
             var pct = hasKids
               ? (budgetRollupTotal(allLines, ln.code) / total) * 100
               : (a0 / total) * 100;
-            shareCell.textContent = pct.toFixed(1) + "%";
+            markLatinNumberEl(shareCell);
+            shareCell.textContent = formatNumber(pct, 1, 1) + "%";
           } else {
             shareCell.textContent = "—";
           }
@@ -6125,7 +6197,10 @@
           else vh.textContent = ui("expensesVarianceOver");
         }
         var lc = document.getElementById("expenses-lines-count");
-        if (lc) lc.textContent = String(getUniqueExpenseDates(expenseEditorState.expenses).length);
+        if (lc) {
+          markLatinNumberEl(lc);
+          lc.textContent = formatInteger(getUniqueExpenseDates(expenseEditorState.expenses).length);
+        }
         if (!expenseEditorState.budgetDoc || expenseEditorState.budgetDoc.status !== "approved") {
           showExpenseInfo(ui("expensesNoBudget"));
         } else {
@@ -6144,12 +6219,14 @@
         }
         section.removeAttribute("hidden");
         list.innerHTML = "";
+        var activeDate = (document.getElementById("expenses-asof-date").value || "").trim();
         dates.forEach(function (d) {
           var li = document.createElement("li");
           var btn = document.createElement("button");
           btn.type = "button";
-          btn.className = "expenses-history__btn";
+          btn.className = "expenses-history__btn" + (d === activeDate ? " is-active" : "");
           var cnt = countExpensesOnDate(expenseEditorState.expenses, d);
+          markLatinNumberEl(btn);
           btn.textContent = d + " (" + cnt + ")";
           btn.setAttribute("data-expense-date", d);
           btn.addEventListener("click", function () {
@@ -6198,27 +6275,38 @@
           var spentVal = exAt ? parseExpenseAmount(exAt) : null;
           var tr = document.createElement("tr");
           var tdCode = document.createElement("td");
-          tdCode.setAttribute("dir", "ltr");
-          tdCode.textContent = code;
+          tdCode.className = "col-code";
+          var codeBadge = document.createElement("span");
+          codeBadge.className = "expenses-line-code";
+          markLatinNumberEl(codeBadge);
+          codeBadge.textContent = code;
+          tdCode.appendChild(codeBadge);
           var tdName = document.createElement("td");
-          tdName.textContent = budgetLineDisplayName(ln);
+          tdName.className = "col-name";
+          var nameSpan = document.createElement("span");
+          nameSpan.className = "expenses-line-name";
+          nameSpan.textContent = budgetLineDisplayName(ln);
+          tdName.appendChild(nameSpan);
           var tdBudget = document.createElement("td");
-          tdBudget.setAttribute("dir", "ltr");
+          tdBudget.className = "col-num";
+          markLatinNumberEl(tdBudget);
           tdBudget.textContent = formatBudgetAmount(bAmt);
           var tdSpent = document.createElement("td");
+          tdSpent.className = "col-spent";
           var inp = document.createElement("input");
           inp.type = "number";
           inp.min = "0";
           inp.step = "any";
           inp.inputMode = "decimal";
           inp.setAttribute("dir", "ltr");
-          inp.className = "expenses-entry-input";
+          inp.className = "expenses-entry-input num-latin";
           inp.setAttribute("data-expense-line", code);
+          markLatinNumberEl(inp);
           if (spentVal != null) inp.value = String(spentVal);
           tdSpent.appendChild(inp);
           var tdVar = document.createElement("td");
-          tdVar.setAttribute("dir", "ltr");
-          tdVar.className = "expenses-entry-var";
+          tdVar.className = "col-var expenses-entry-var";
+          markLatinNumberEl(tdVar);
           tdVar.setAttribute("data-expense-var", code);
           var v = spentVal != null ? bAmt - spentVal : null;
           if (v != null) {
@@ -6233,12 +6321,12 @@
             var amt = raw === "" ? NaN : parseFloat(raw);
             if (isNaN(amt)) {
               tdVar.textContent = "—";
-              tdVar.className = "expenses-entry-var";
+              tdVar.className = "col-var expenses-entry-var";
               return;
             }
             var vv = bAmt - amt;
             tdVar.textContent = formatBudgetAmount(vv);
-            tdVar.className = "expenses-entry-var";
+            tdVar.className = "col-var expenses-entry-var";
             tdVar.classList.toggle("expenses-variance--over", vv < 0);
             tdVar.classList.toggle("expenses-variance--under", vv > 0);
           });
@@ -6278,20 +6366,33 @@
           var sAmt = spentRollupForLine(lines, code, spentMap);
           var v = bAmt - sAmt;
           var tr = document.createElement("tr");
+          if (hasKids) tr.className = "expenses-var-row--parent";
           var td1 = document.createElement("td");
-          td1.setAttribute("dir", "ltr");
-          td1.textContent = code;
+          td1.className = "col-code";
+          var codeEl = document.createElement("span");
+          codeEl.className = "expenses-line-code";
+          markLatinNumberEl(codeEl);
+          codeEl.textContent = code;
+          td1.appendChild(codeEl);
           var td2 = document.createElement("td");
-          td2.textContent = budgetLineDisplayName(ln);
+          td2.className = "col-name";
+          var nmEl = document.createElement("span");
+          nmEl.className = "expenses-line-name";
+          nmEl.textContent = budgetLineDisplayName(ln);
+          td2.appendChild(nmEl);
           var td3 = document.createElement("td");
-          td3.setAttribute("dir", "ltr");
+          td3.className = "col-num";
+          markLatinNumberEl(td3);
           td3.textContent = formatBudgetAmount(bAmt);
           var td4 = document.createElement("td");
-          td4.setAttribute("dir", "ltr");
+          td4.className = "col-num";
+          markLatinNumberEl(td4);
           td4.textContent = formatBudgetAmount(sAmt);
           var td5 = document.createElement("td");
-          td5.setAttribute("dir", "ltr");
-          td5.className = v < 0 ? "expenses-variance--over" : v > 0 ? "expenses-variance--under" : "";
+          td5.className =
+            "col-var" +
+            (v < 0 ? " expenses-variance--over" : v > 0 ? " expenses-variance--under" : "");
+          markLatinNumberEl(td5);
           td5.textContent = formatBudgetAmount(v);
           tr.appendChild(td1);
           tr.appendChild(td2);
@@ -6522,7 +6623,12 @@
           el.textContent = "—";
           return;
         }
-        el.textContent = String(value);
+        markLatinNumberEl(el);
+        if (typeof value === "number" && !isNaN(value)) {
+          el.textContent = formatInteger(value);
+        } else {
+          el.textContent = toLatinDigits(String(value));
+        }
       }
 
       function renderDashboardAlerts(items) {
@@ -6617,7 +6723,10 @@
 
             var pct = projectCount > 0 ? Math.round((approved / projectCount) * 100) : 0;
             var pctEl = document.getElementById("dash-progress-approved-pct");
-            if (pctEl) pctEl.textContent = pct + "%";
+            if (pctEl) {
+              markLatinNumberEl(pctEl);
+              pctEl.textContent = formatInteger(pct) + "%";
+            }
             var bar = document.getElementById("dash-progress-approved-bar");
             if (bar) bar.style.width = pct + "%";
 
