@@ -502,25 +502,39 @@
               </div>
             </div>
 
-            <div class="expenses-toolbar">
-              <button type="button" class="btn btn--primary btn--small" id="expenses-add-btn"></button>
+            <div class="expenses-entry-panel">
+              <div class="expenses-entry-toolbar">
+                <div class="expenses-entry-toolbar__date">
+                  <label for="expenses-asof-date" id="expenses-lbl-asof-date"></label>
+                  <input type="date" id="expenses-asof-date" dir="ltr" />
+                </div>
+                <button type="button" class="btn btn--primary btn--small" id="expenses-save-grid-btn"></button>
+              </div>
+              <p id="expenses-hint" class="budget-hint"></p>
+              <div id="expenses-entry-loading" class="budget-loading" hidden></div>
+              <div id="expenses-entry-empty" class="budget-empty" hidden>
+                <p class="budget-empty__title" id="expenses-entry-empty-title"></p>
+                <p class="budget-empty__lead" id="expenses-entry-empty-lead"></p>
+              </div>
+              <div class="table-scroll expenses-entry-scroll" id="expenses-entry-wrap">
+                <table class="data-table data-table--list expenses-entry-table">
+                  <thead>
+                    <tr>
+                      <th id="expenses-entry-th-code" scope="col" class="col-code"></th>
+                      <th id="expenses-entry-th-name" scope="col"></th>
+                      <th id="expenses-entry-th-budget" scope="col" class="col-num"></th>
+                      <th id="expenses-entry-th-spent" scope="col" class="col-spent"></th>
+                      <th id="expenses-entry-th-var" scope="col" class="col-num"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="expenses-entry-tbody"></tbody>
+                </table>
+              </div>
             </div>
-            <p id="expenses-hint" class="budget-hint"></p>
 
-            <div class="budget-tree-panel expenses-table-panel">
-              <div class="budget-tree-head expenses-table-head" aria-hidden="true">
-                <span id="expenses-th-date"></span>
-                <span id="expenses-th-line"></span>
-                <span id="expenses-th-amount"></span>
-                <span id="expenses-th-desc"></span>
-                <span></span>
-              </div>
-              <div id="expenses-loading" class="budget-loading" hidden></div>
-              <div id="expenses-empty" class="budget-empty" hidden>
-                <p class="budget-empty__title" id="expenses-empty-title"></p>
-                <p class="budget-empty__lead" id="expenses-empty-lead"></p>
-              </div>
-              <div id="expenses-tbody-host" class="expenses-rows"></div>
+            <div class="expenses-history" id="expenses-history-section" hidden>
+              <h3 class="expenses-history__title" id="expenses-history-title"></h3>
+              <ul class="expenses-history__list" id="expenses-history-list"></ul>
             </div>
 
             <div class="expenses-variance-section" id="expenses-variance-section" hidden>
@@ -1226,21 +1240,27 @@
             expensesEditorKicker: "عقد / مشروع",
             expensesGoBudget: "الموازنة",
             expensesLblBudget: "موازنة معتمدة",
-            expensesLblSpent: "إجمالي المنفق",
             expensesLblVariance: "الانحراف",
             expensesVarianceUnder: "تحت الموازنة",
             expensesVarianceOver: "تجاوز الموازنة",
             expensesVarianceEven: "مطابق",
-            expensesLblCount: "عدد القيود",
-            expensesAddBtn: "إضافة مصروف",
-            expensesHint: "سجّل المصروفات واربطها ببند من موازنة العقد. يُفضّل وجود موازنة معتمدة.",
-            expensesThDate: "التاريخ",
-            expensesThLine: "بند الموازنة",
-            expensesThAmount: "المبلغ",
-            expensesThDesc: "الوصف",
-            expensesEmptyTitle: "لا توجد مصروفات مسجّلة",
-            expensesEmptyLead: "أضف أول قيد مصروف لهذا العقد.",
+            expensesLblCount: "لقطات بالتاريخ",
+            expensesLblAsOfDate: "تاريخ اللقطة",
+            expensesSaveGrid: "حفظ الأرصدة",
+            expensesHint:
+              "أدخل المنفق التراكمي من بداية المشروع لكل بند فرعي حسب التاريخ. البنود الرئيسية تُجمَّع تلقائياً من الفرعية ولا تُسجَّل عليها مباشرة.",
+            expensesEntryThCode: "الرمز",
+            expensesEntryThName: "البند الفرعي",
+            expensesEntryThBudget: "الموازنة",
+            expensesEntryThSpent: "المنفق التراكمي",
+            expensesEntryThVar: "الانحراف",
+            expensesEntryEmptyTitle: "لا توجد بنود فرعية",
+            expensesEntryEmptyLead: "اعتمد موازنة العقد وأضف بنوداً فرعية لتسجيل المصروفات.",
             expensesLoading: "جاري التحميل…",
+            expensesHistoryTitle: "تواريخ مسجّلة",
+            expensesHistoryPick: "عرض لقطة",
+            expenseErrorParentLine: "لا يُسجَّل مصروف على البند الرئيسي — استخدم البنود الفرعية.",
+            expensesLblSpent: "إجمالي المنفق التراكمي",
             expensesNoBudget: "لا توجد موازنة معتمدة — يمكن التسجيل لكن جدول الانحراف يظهر بعد الاعتماد.",
             expensesModalAdd: "إضافة مصروف",
             expensesModalEdit: "تعديل مصروف",
@@ -1253,7 +1273,7 @@
             expenseErrorLine: "اختر بند الموازنة.",
             expenseErrorAmount: "أدخل مبلغًا صالحًا.",
             expensesDeleteConfirm: "حذف قيد المصروف هذا؟",
-            expensesSaveOk: "تم حفظ المصروف.",
+            expensesSaveOk: "تم حفظ الأرصدة.",
             expensesVarianceTitle: "انحراف حسب بند الموازنة",
             expVarThCode: "الرمز",
             expVarThName: "البند",
@@ -1610,21 +1630,27 @@
             expensesEditorKicker: "Contract / project",
             expensesGoBudget: "Budget",
             expensesLblBudget: "Approved budget",
-            expensesLblSpent: "Total spent",
+            expensesLblSpent: "Total cumulative spent",
             expensesLblVariance: "Variance",
             expensesVarianceUnder: "Under budget",
             expensesVarianceOver: "Over budget",
             expensesVarianceEven: "On budget",
-            expensesLblCount: "Entries",
-            expensesAddBtn: "Add expense",
-            expensesHint: "Record expenses linked to a budget line. An approved budget is recommended.",
-            expensesThDate: "Date",
-            expensesThLine: "Budget line",
-            expensesThAmount: "Amount",
-            expensesThDesc: "Description",
-            expensesEmptyTitle: "No expenses yet",
-            expensesEmptyLead: "Add the first expense entry for this contract.",
+            expensesLblCount: "Date snapshots",
+            expensesLblAsOfDate: "As-of date",
+            expensesSaveGrid: "Save balances",
+            expensesHint:
+              "Enter cumulative spent from project start for each sub-line by date. Parent lines roll up from children and cannot be posted directly.",
+            expensesEntryThCode: "Code",
+            expensesEntryThName: "Sub-line",
+            expensesEntryThBudget: "Budget",
+            expensesEntryThSpent: "Cumulative spent",
+            expensesEntryThVar: "Variance",
+            expensesEntryEmptyTitle: "No sub-lines",
+            expensesEntryEmptyLead: "Approve the contract budget and add sub-lines before recording expenses.",
             expensesLoading: "Loading expenses…",
+            expensesHistoryTitle: "Recorded dates",
+            expensesHistoryPick: "View snapshot",
+            expenseErrorParentLine: "Parent lines cannot be posted — use sub-lines.",
             expensesNoBudget: "No approved budget — you can still record expenses; variance table appears after approval.",
             expensesModalAdd: "Add expense",
             expensesModalEdit: "Edit expense",
@@ -1637,7 +1663,7 @@
             expenseErrorLine: "Select a budget line.",
             expenseErrorAmount: "Enter a valid amount.",
             expensesDeleteConfirm: "Delete this expense entry?",
-            expensesSaveOk: "Expense saved.",
+            expensesSaveOk: "Balances saved.",
             expensesVarianceTitle: "Variance by budget line",
             expVarThCode: "Code",
             expVarThName: "Line",
@@ -2168,24 +2194,30 @@
           if (elv) elv.textContent = ui("expensesLblVariance");
           var elc = document.getElementById("expenses-lbl-count");
           if (elc) elc.textContent = ui("expensesLblCount");
-          var eadd = document.getElementById("expenses-add-btn");
-          if (eadd) eadd.textContent = ui("expensesAddBtn");
+          var elad = document.getElementById("expenses-lbl-asof-date");
+          if (elad) elad.textContent = ui("expensesLblAsOfDate");
+          var esg = document.getElementById("expenses-save-grid-btn");
+          if (esg) esg.textContent = ui("expensesSaveGrid");
           var ehint = document.getElementById("expenses-hint");
           if (ehint) ehint.textContent = ui("expensesHint");
-          var ethd = document.getElementById("expenses-th-date");
-          if (ethd) ethd.textContent = ui("expensesThDate");
-          var ethl = document.getElementById("expenses-th-line");
-          if (ethl) ethl.textContent = ui("expensesThLine");
-          var etha = document.getElementById("expenses-th-amount");
-          if (etha) etha.textContent = ui("expensesThAmount");
-          var ethds = document.getElementById("expenses-th-desc");
-          if (ethds) ethds.textContent = ui("expensesThDesc");
-          var eet = document.getElementById("expenses-empty-title");
-          if (eet) eet.textContent = ui("expensesEmptyTitle");
-          var eel = document.getElementById("expenses-empty-lead");
-          if (eel) eel.textContent = ui("expensesEmptyLead");
-          var eload = document.getElementById("expenses-loading");
+          var eetc = document.getElementById("expenses-entry-th-code");
+          if (eetc) eetc.textContent = ui("expensesEntryThCode");
+          var eetn = document.getElementById("expenses-entry-th-name");
+          if (eetn) eetn.textContent = ui("expensesEntryThName");
+          var eetb = document.getElementById("expenses-entry-th-budget");
+          if (eetb) eetb.textContent = ui("expensesEntryThBudget");
+          var eets = document.getElementById("expenses-entry-th-spent");
+          if (eets) eets.textContent = ui("expensesEntryThSpent");
+          var eetv = document.getElementById("expenses-entry-th-var");
+          if (eetv) eetv.textContent = ui("expensesEntryThVar");
+          var eeet = document.getElementById("expenses-entry-empty-title");
+          if (eeet) eeet.textContent = ui("expensesEntryEmptyTitle");
+          var eeel = document.getElementById("expenses-entry-empty-lead");
+          if (eeel) eeel.textContent = ui("expensesEntryEmptyLead");
+          var eload = document.getElementById("expenses-entry-loading");
           if (eload) eload.textContent = ui("expensesLoading");
+          var eht = document.getElementById("expenses-history-title");
+          if (eht) eht.textContent = ui("expensesHistoryTitle");
           var evt = document.getElementById("expenses-variance-title");
           if (evt) evt.textContent = ui("expensesVarianceTitle");
           var evc = document.getElementById("exp-var-th-code");
@@ -2489,7 +2521,7 @@
         var sex = document.getElementById("screen-project-expenses");
         if (sex && sex.classList.contains("is-visible") && expenseEditorState.projectId) {
           refreshExpensesHeaderMeta();
-          renderExpensesList();
+          renderExpensesEntryGrid();
           renderExpensesVarianceTable();
         }
         var sdash = document.getElementById("screen-dashboard");
@@ -5920,25 +5952,126 @@
         return computeBudgetTotal(budgetDoc.lines || []);
       }
 
-      function sumExpensesAmount(expenses) {
-        var sum = 0;
+      function parseExpenseAmount(ex) {
+        var a = typeof ex.amount === "number" ? ex.amount : parseFloat(ex.amount);
+        return isNaN(a) ? 0 : a;
+      }
+
+      function getLeafBudgetLines(lines) {
+        var all = sortBudgetLines(lines || []);
+        return all.filter(function (ln) {
+          var code = String(ln.code || "").trim();
+          return code && !budgetLineHasChildren(lines || [], code);
+        });
+      }
+
+      function buildSpentByCodeLatest(expenses, asOfDate) {
+        var map = {};
+        var bestDate = {};
         (expenses || []).forEach(function (ex) {
-          var a = typeof ex.amount === "number" ? ex.amount : parseFloat(ex.amount);
-          if (!isNaN(a)) sum += a;
+          var c = ex.budgetLineCode != null ? String(ex.budgetLineCode).trim() : "";
+          if (!c) return;
+          var d = ex.expenseDate || "";
+          if (asOfDate && d && d > asOfDate) return;
+          var a = parseExpenseAmount(ex);
+          var prevD = bestDate[c] || "";
+          if (!prevD || d >= prevD) {
+            map[c] = a;
+            bestDate[c] = d;
+          }
+        });
+        return map;
+      }
+
+      function spentRollupForLine(lines, code, spentMap) {
+        var c = String(code || "").trim();
+        if (!c) return 0;
+        if (!budgetLineHasChildren(lines, c)) return spentMap[c] || 0;
+        var sum = 0;
+        (lines || []).forEach(function (ln) {
+          var lc = String(ln.code || "").trim();
+          if (!lc) return;
+          var p = ln.parent != null ? String(ln.parent).trim() : "";
+          if (p === c) sum += spentRollupForLine(lines, lc, spentMap);
         });
         return sum;
       }
 
-      function buildSpentByCode(expenses) {
-        var map = {};
-        (expenses || []).forEach(function (ex) {
-          var c = ex.budgetLineCode != null ? String(ex.budgetLineCode).trim() : "";
-          if (!c) return;
-          var a = typeof ex.amount === "number" ? ex.amount : parseFloat(ex.amount);
-          if (isNaN(a)) a = 0;
-          map[c] = (map[c] || 0) + a;
+      function sumLeafLatestSpent(expenses, lines) {
+        var latest = buildSpentByCodeLatest(expenses);
+        var leaves = getLeafBudgetLines(lines || []);
+        if (!leaves.length) {
+          var sum = 0;
+          Object.keys(latest).forEach(function (k) {
+            sum += latest[k];
+          });
+          return sum;
+        }
+        var total = 0;
+        leaves.forEach(function (ln) {
+          var code = String(ln.code || "").trim();
+          total += latest[code] || 0;
         });
-        return map;
+        return total;
+      }
+
+      function getUniqueExpenseDates(expenses) {
+        var set = {};
+        (expenses || []).forEach(function (ex) {
+          var d = ex.expenseDate || "";
+          if (d) set[d] = true;
+        });
+        return Object.keys(set).sort(function (a, b) {
+          return b.localeCompare(a);
+        });
+      }
+
+      function findExpenseForLineDate(expenses, code, date) {
+        var c = String(code || "").trim();
+        var d = date || "";
+        return (expenses || []).find(function (ex) {
+          return String(ex.budgetLineCode || "").trim() === c && (ex.expenseDate || "") === d;
+        });
+      }
+
+      function countExpensesOnDate(expenses, date) {
+        var n = 0;
+        (expenses || []).forEach(function (ex) {
+          if ((ex.expenseDate || "") === date) n++;
+        });
+        return n;
+      }
+
+      function computeProjectsSpentMap(expenseSnap, budgetMap) {
+        var byProject = {};
+        if (expenseSnap && expenseSnap.forEach) {
+          expenseSnap.forEach(function (edoc) {
+            var ed = edoc.data() || {};
+            var pid = ed.projectId != null ? String(ed.projectId) : "";
+            if (!pid) return;
+            if (!byProject[pid]) byProject[pid] = [];
+            byProject[pid].push({
+              budgetLineCode: ed.budgetLineCode,
+              amount: ed.amount,
+              expenseDate: ed.expenseDate
+            });
+          });
+        }
+        var spentMap = {};
+        Object.keys(byProject).forEach(function (pid) {
+          var bm = budgetMap[pid];
+          var lines = bm && bm.lines ? bm.lines : [];
+          spentMap[pid] = sumLeafLatestSpent(byProject[pid], lines);
+        });
+        return spentMap;
+      }
+
+      function sumExpensesAmount(expenses) {
+        return sumLeafLatestSpent(expenses, expenseEditorState.budgetLines || []);
+      }
+
+      function buildSpentByCode(expenses) {
+        return buildSpentByCodeLatest(expenses);
       }
 
       function refreshExpensesHeaderMeta() {
@@ -5970,7 +6103,8 @@
       }
 
       function updateExpensesSummaryUi() {
-        var spent = sumExpensesAmount(expenseEditorState.expenses);
+        var lines = expenseEditorState.budgetLines || [];
+        var spent = sumLeafLatestSpent(expenseEditorState.expenses, lines);
         var budgetTotal = getApprovedBudgetTotal(expenseEditorState.budgetDoc);
         var variance = budgetTotal - spent;
         var st = document.getElementById("expenses-spent-total");
@@ -5991,7 +6125,7 @@
           else vh.textContent = ui("expensesVarianceOver");
         }
         var lc = document.getElementById("expenses-lines-count");
-        if (lc) lc.textContent = String(expenseEditorState.expenses.length);
+        if (lc) lc.textContent = String(getUniqueExpenseDates(expenseEditorState.expenses).length);
         if (!expenseEditorState.budgetDoc || expenseEditorState.budgetDoc.status !== "approved") {
           showExpenseInfo(ui("expensesNoBudget"));
         } else {
@@ -5999,72 +6133,124 @@
         }
       }
 
-      function renderExpensesList() {
-        var host = document.getElementById("expenses-tbody-host");
-        var emptyEl = document.getElementById("expenses-empty");
-        var headEl = document.querySelector(".expenses-table-head");
-        if (!host) return;
-        var rows = expenseEditorState.expenses.slice().sort(function (a, b) {
-          var da = a.expenseDate || "";
-          var db = b.expenseDate || "";
-          return db.localeCompare(da);
+      function renderExpensesHistory() {
+        var section = document.getElementById("expenses-history-section");
+        var list = document.getElementById("expenses-history-list");
+        if (!section || !list) return;
+        var dates = getUniqueExpenseDates(expenseEditorState.expenses);
+        if (dates.length <= 1) {
+          section.setAttribute("hidden", "");
+          return;
+        }
+        section.removeAttribute("hidden");
+        list.innerHTML = "";
+        dates.forEach(function (d) {
+          var li = document.createElement("li");
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "expenses-history__btn";
+          var cnt = countExpensesOnDate(expenseEditorState.expenses, d);
+          btn.textContent = d + " (" + cnt + ")";
+          btn.setAttribute("data-expense-date", d);
+          btn.addEventListener("click", function () {
+            var inp = document.getElementById("expenses-asof-date");
+            if (inp) inp.value = d;
+            renderExpensesEntryGrid();
+          });
+          li.appendChild(btn);
+          list.appendChild(li);
         });
+      }
+
+      function renderExpensesEntryGrid() {
+        var tbody = document.getElementById("expenses-entry-tbody");
+        var emptyEl = document.getElementById("expenses-entry-empty");
+        var wrap = document.getElementById("expenses-entry-wrap");
+        if (!tbody) return;
+        var lines = expenseEditorState.budgetLines || [];
+        var leaves = getLeafBudgetLines(lines);
+        var noBudget =
+          !expenseEditorState.budgetDoc || expenseEditorState.budgetDoc.status !== "approved";
+        var asofInput = document.getElementById("expenses-asof-date");
+        if (asofInput && !asofInput.value && !expenseEditorState.loading) {
+          asofInput.value = todayYyyyMmDd();
+        }
+        var asOf = asofInput ? (asofInput.value || "").trim() : "";
         if (emptyEl) {
-          if (!rows.length && !expenseEditorState.loading) {
+          if ((noBudget || !leaves.length) && !expenseEditorState.loading) {
             emptyEl.removeAttribute("hidden");
-            if (headEl) headEl.setAttribute("hidden", "");
+            if (wrap) wrap.setAttribute("hidden", "");
           } else {
             emptyEl.setAttribute("hidden", "");
-            if (headEl) headEl.removeAttribute("hidden");
+            if (wrap) wrap.removeAttribute("hidden");
           }
         }
-        host.innerHTML = "";
-        var lineMap = {};
-        (expenseEditorState.budgetLines || []).forEach(function (ln) {
-          lineMap[String(ln.code).trim()] = ln;
-        });
-        rows.forEach(function (ex) {
-          var row = document.createElement("div");
-          row.className = "budget-tree-row expenses-row";
-          var dateCell = document.createElement("span");
-          dateCell.className = "expenses-row__date";
-          dateCell.setAttribute("dir", "ltr");
-          dateCell.textContent = ex.expenseDate || "—";
-          var lineCell = document.createElement("span");
-          lineCell.className = "expenses-row__line";
-          var code = ex.budgetLineCode != null ? String(ex.budgetLineCode).trim() : "";
-          var ln = lineMap[code];
-          lineCell.textContent = code + (ln ? " — " + budgetLineDisplayName(ln) : "");
-          var amtCell = document.createElement("span");
-          amtCell.className = "expenses-row__amount";
-          amtCell.setAttribute("dir", "ltr");
-          amtCell.textContent = formatBudgetAmount(ex.amount);
-          var descCell = document.createElement("span");
-          descCell.className = "expenses-row__desc";
-          descCell.textContent =
-            ex.description != null && String(ex.description).trim() ? String(ex.description).trim() : "—";
-          var acts = document.createElement("div");
-          acts.className = "budget-tree-row__actions";
-          var btnEd = document.createElement("button");
-          btnEd.type = "button";
-          btnEd.className = "budget-icon-btn";
-          btnEd.textContent = "✎";
-          btnEd.setAttribute("data-expense-edit", ex.id);
-          var btnDel = document.createElement("button");
-          btnDel.type = "button";
-          btnDel.className = "budget-icon-btn budget-icon-btn--danger";
-          btnDel.textContent = "×";
-          btnDel.setAttribute("data-expense-delete", ex.id);
-          acts.appendChild(btnEd);
-          acts.appendChild(btnDel);
-          row.appendChild(dateCell);
-          row.appendChild(lineCell);
-          row.appendChild(amtCell);
-          row.appendChild(descCell);
-          row.appendChild(acts);
-          host.appendChild(row);
+        tbody.innerHTML = "";
+        if (noBudget || !leaves.length) {
+          updateExpensesSummaryUi();
+          renderExpensesHistory();
+          return;
+        }
+        leaves.forEach(function (ln) {
+          var code = String(ln.code || "").trim();
+          var bAmt = typeof ln.amount === "number" ? ln.amount : parseFloat(ln.amount) || 0;
+          var exAt = asOf ? findExpenseForLineDate(expenseEditorState.expenses, code, asOf) : null;
+          var spentVal = exAt ? parseExpenseAmount(exAt) : null;
+          var tr = document.createElement("tr");
+          var tdCode = document.createElement("td");
+          tdCode.setAttribute("dir", "ltr");
+          tdCode.textContent = code;
+          var tdName = document.createElement("td");
+          tdName.textContent = budgetLineDisplayName(ln);
+          var tdBudget = document.createElement("td");
+          tdBudget.setAttribute("dir", "ltr");
+          tdBudget.textContent = formatBudgetAmount(bAmt);
+          var tdSpent = document.createElement("td");
+          var inp = document.createElement("input");
+          inp.type = "number";
+          inp.min = "0";
+          inp.step = "any";
+          inp.inputMode = "decimal";
+          inp.setAttribute("dir", "ltr");
+          inp.className = "expenses-entry-input";
+          inp.setAttribute("data-expense-line", code);
+          if (spentVal != null) inp.value = String(spentVal);
+          tdSpent.appendChild(inp);
+          var tdVar = document.createElement("td");
+          tdVar.setAttribute("dir", "ltr");
+          tdVar.className = "expenses-entry-var";
+          tdVar.setAttribute("data-expense-var", code);
+          var v = spentVal != null ? bAmt - spentVal : null;
+          if (v != null) {
+            tdVar.textContent = formatBudgetAmount(v);
+            tdVar.classList.toggle("expenses-variance--over", v < 0);
+            tdVar.classList.toggle("expenses-variance--under", v > 0);
+          } else {
+            tdVar.textContent = "—";
+          }
+          inp.addEventListener("input", function () {
+            var raw = inp.value.trim();
+            var amt = raw === "" ? NaN : parseFloat(raw);
+            if (isNaN(amt)) {
+              tdVar.textContent = "—";
+              tdVar.className = "expenses-entry-var";
+              return;
+            }
+            var vv = bAmt - amt;
+            tdVar.textContent = formatBudgetAmount(vv);
+            tdVar.className = "expenses-entry-var";
+            tdVar.classList.toggle("expenses-variance--over", vv < 0);
+            tdVar.classList.toggle("expenses-variance--under", vv > 0);
+          });
+          tr.appendChild(tdCode);
+          tr.appendChild(tdName);
+          tr.appendChild(tdBudget);
+          tr.appendChild(tdSpent);
+          tr.appendChild(tdVar);
+          tbody.appendChild(tr);
         });
         updateExpensesSummaryUi();
+        renderExpensesHistory();
       }
 
       function renderExpensesVarianceTable() {
@@ -6077,13 +6263,19 @@
           return;
         }
         section.removeAttribute("hidden");
-        var spentMap = buildSpentByCode(expenseEditorState.expenses);
+        var lines = budgetDoc.lines || [];
+        var spentMap = buildSpentByCodeLatest(expenseEditorState.expenses);
         tbody.innerHTML = "";
-        sortBudgetLines(budgetDoc.lines || []).forEach(function (ln) {
+        sortBudgetLines(lines).forEach(function (ln) {
           var code = String(ln.code || "").trim();
           if (!code) return;
-          var bAmt = typeof ln.amount === "number" ? ln.amount : parseFloat(ln.amount) || 0;
-          var sAmt = spentMap[code] || 0;
+          var hasKids = budgetLineHasChildren(lines, code);
+          var bAmt = hasKids
+            ? budgetRollupTotal(lines, code)
+            : typeof ln.amount === "number"
+              ? ln.amount
+              : parseFloat(ln.amount) || 0;
+          var sAmt = spentRollupForLine(lines, code, spentMap);
           var v = bAmt - sAmt;
           var tr = document.createElement("tr");
           var td1 = document.createElement("td");
@@ -6110,6 +6302,79 @@
         });
       }
 
+      function saveExpensesEntryGrid() {
+        var F = window.AppFirebase;
+        if (!F || !F.db) return;
+        var pid = expenseEditorState.projectId;
+        if (!pid) return;
+        var asOf = (document.getElementById("expenses-asof-date").value || "").trim();
+        if (!asOf) {
+          showExpenseAlert(ui("expenseErrorDate"));
+          return;
+        }
+        var lines = expenseEditorState.budgetLines || [];
+        var inputs = document.querySelectorAll("#expenses-entry-tbody .expenses-entry-input");
+        if (!inputs.length) {
+          showExpenseAlert(ui("expensesEntryEmptyLead"));
+          return;
+        }
+        var saveBtn = document.getElementById("expenses-save-grid-btn");
+        if (saveBtn) saveBtn.disabled = true;
+        showExpenseAlert("");
+        var tasks = [];
+        inputs.forEach(function (inp) {
+          var code = inp.getAttribute("data-expense-line");
+          if (!code) return;
+          if (budgetLineHasChildren(lines, code)) return;
+          var raw = (inp.value || "").trim();
+          var existing = findExpenseForLineDate(expenseEditorState.expenses, code, asOf);
+          if (raw === "") {
+            if (existing && existing.id) {
+              tasks.push(F.db.collection("contractExpenses").doc(existing.id).delete());
+            }
+            return;
+          }
+          var amount = parseFloat(raw);
+          if (isNaN(amount) || amount < 0) return;
+          var payload = {
+            projectId: pid,
+            budgetLineCode: code,
+            amount: amount,
+            expenseDate: asOf,
+            entryType: "cumulative",
+            description: "",
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+          if (existing && existing.id) {
+            tasks.push(
+              F.db.collection("contractExpenses").doc(existing.id).set(payload, { merge: true })
+            );
+          } else {
+            payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            tasks.push(F.db.collection("contractExpenses").add(payload));
+          }
+        });
+        if (!tasks.length) {
+          if (saveBtn) saveBtn.disabled = false;
+          return;
+        }
+        Promise.all(tasks)
+          .then(function () {
+            showExpenseSuccess(ui("expensesSaveOk"));
+            var spr = document.getElementById("screen-projects");
+            if (spr && spr.classList.contains("is-visible")) {
+              loadProjectsScreen();
+            }
+            return loadProjectExpensesScreen();
+          })
+          .catch(function (e) {
+            showExpenseAlert(e && e.message ? e.message : String(e));
+          })
+          .then(function () {
+            if (saveBtn) saveBtn.disabled = false;
+          });
+      }
+
       function loadProjectExpensesScreen() {
         var F = window.AppFirebase;
         var pid = expenseEditorState.projectId;
@@ -6133,7 +6398,7 @@
           showExpenseAlert(currentLang === "en" ? "Firebase not ready." : "Firebase غير جاهز.");
           return;
         }
-        var loadEl = document.getElementById("expenses-loading");
+        var loadEl = document.getElementById("expenses-entry-loading");
         if (loadEl) loadEl.removeAttribute("hidden");
         expenseEditorState.loading = true;
         Promise.all([
@@ -6152,7 +6417,8 @@
                 budgetLineCode: data.budgetLineCode != null ? String(data.budgetLineCode) : "",
                 amount: typeof data.amount === "number" ? data.amount : parseFloat(data.amount) || 0,
                 expenseDate: data.expenseDate != null ? String(data.expenseDate) : "",
-                description: data.description != null ? String(data.description) : ""
+                description: data.description != null ? String(data.description) : "",
+                entryType: data.entryType != null ? String(data.entryType) : ""
               });
             });
             expenseEditorState.expenses = list;
@@ -6168,7 +6434,7 @@
               expenseEditorState.budgetDoc = null;
               expenseEditorState.budgetLines = [];
             }
-            renderExpensesList();
+            renderExpensesEntryGrid();
             renderExpensesVarianceTable();
           })
           .catch(function (e) {
@@ -6177,7 +6443,8 @@
           .then(function () {
             expenseEditorState.loading = false;
             if (loadEl) loadEl.setAttribute("hidden", "");
-            renderExpensesList();
+            renderExpensesEntryGrid();
+            renderExpensesVarianceTable();
           });
       }
 
@@ -6190,73 +6457,10 @@
         expenseEditorState.expenses = [];
         expenseEditorState.budgetDoc = null;
         expenseEditorState.budgetLines = [];
+        var asofInput = document.getElementById("expenses-asof-date");
+        if (asofInput) asofInput.value = todayYyyyMmDd();
         showScreen("project-expenses");
         loadProjectExpensesScreen();
-      }
-
-      function fillExpenseLineSelect(selectEl) {
-        if (!selectEl) return;
-        selectEl.innerHTML = "";
-        var o0 = document.createElement("option");
-        o0.value = "";
-        o0.textContent = ui("expenseSelectLine");
-        selectEl.appendChild(o0);
-        sortBudgetLines(expenseEditorState.budgetLines || []).forEach(function (ln) {
-          var code = String(ln.code || "").trim();
-          if (!code) return;
-          var opt = document.createElement("option");
-          opt.value = code;
-          opt.textContent = code + " — " + budgetLineDisplayName(ln);
-          selectEl.appendChild(opt);
-        });
-      }
-
-      function openExpenseModalAdd() {
-        expenseEditorState.modalMode = "add";
-        expenseEditorState.editId = null;
-        var ttl = document.getElementById("expense-modal-title");
-        if (ttl) ttl.textContent = ui("expensesModalAdd");
-        fillExpenseLineSelect(document.getElementById("expense-modal-line"));
-        var dt = document.getElementById("expense-modal-date");
-        if (dt) dt.value = todayYyyyMmDd();
-        var am = document.getElementById("expense-modal-amount");
-        if (am) am.value = "";
-        var ds = document.getElementById("expense-modal-desc");
-        if (ds) ds.value = "";
-        showExpenseModalError("");
-        var m = document.getElementById("expense-modal");
-        if (m) {
-          m.removeAttribute("hidden");
-          syncModalBodyScrollLock();
-        }
-      }
-
-      function openExpenseModalEdit(ex) {
-        expenseEditorState.modalMode = "edit";
-        expenseEditorState.editId = ex.id;
-        var ttl = document.getElementById("expense-modal-title");
-        if (ttl) ttl.textContent = ui("expensesModalEdit");
-        fillExpenseLineSelect(document.getElementById("expense-modal-line"));
-        var sel = document.getElementById("expense-modal-line");
-        if (sel) sel.value = ex.budgetLineCode || "";
-        var dt = document.getElementById("expense-modal-date");
-        if (dt) dt.value = ex.expenseDate || todayYyyyMmDd();
-        var am = document.getElementById("expense-modal-amount");
-        if (am) am.value = ex.amount != null ? String(ex.amount) : "0";
-        var ds = document.getElementById("expense-modal-desc");
-        if (ds) ds.value = ex.description || "";
-        showExpenseModalError("");
-        var m = document.getElementById("expense-modal");
-        if (m) {
-          m.removeAttribute("hidden");
-          syncModalBodyScrollLock();
-        }
-      }
-
-      function closeExpenseModal() {
-        var m = document.getElementById("expense-modal");
-        if (m) m.setAttribute("hidden", "");
-        syncModalBodyScrollLock();
       }
 
       function deleteContractExpensesForProject(projectId) {
@@ -6371,13 +6575,30 @@
             });
             var noBudget = Math.max(0, projectCount - withBudget);
             var expenseCount = expSnap.size;
-            var totalSpent = 0;
-            var expenseProjectIds = {};
+            var budgetLinesMap = {};
+            budSnap.forEach(function (doc) {
+              var bd = doc.data() || {};
+              budgetLinesMap[doc.id] = cloneBudgetLines(bd.lines || []);
+            });
+            var byProject = {};
             expSnap.forEach(function (doc) {
               var ed = doc.data() || {};
-              var a = typeof ed.amount === "number" ? ed.amount : parseFloat(ed.amount);
-              if (!isNaN(a)) totalSpent += a;
-              if (ed.projectId) expenseProjectIds[String(ed.projectId)] = true;
+              var pid = ed.projectId != null ? String(ed.projectId) : "";
+              if (!pid) return;
+              if (!byProject[pid]) byProject[pid] = [];
+              byProject[pid].push({
+                budgetLineCode: ed.budgetLineCode,
+                amount: ed.amount,
+                expenseDate: ed.expenseDate
+              });
+            });
+            var totalSpent = 0;
+            Object.keys(byProject).forEach(function (pid) {
+              totalSpent += sumLeafLatestSpent(byProject[pid], budgetLinesMap[pid] || []);
+            });
+            var expenseProjectIds = {};
+            Object.keys(byProject).forEach(function (pid) {
+              expenseProjectIds[pid] = true;
             });
             var expensesWithoutApproved = 0;
             Object.keys(expenseProjectIds).forEach(function (pid) {
@@ -6470,136 +6691,17 @@
             if (expenseEditorState.projectId) openProjectBudget(expenseEditorState.projectId);
           });
         }
-        var addBtn = document.getElementById("expenses-add-btn");
-        if (addBtn) {
-          addBtn.addEventListener("click", function () {
-            if (!(expenseEditorState.budgetLines || []).length) {
-              showExpenseAlert(ui("expensesNoBudget"));
-              return;
-            }
-            openExpenseModalAdd();
+        var asof = document.getElementById("expenses-asof-date");
+        if (asof) {
+          asof.addEventListener("change", function () {
+            renderExpensesEntryGrid();
           });
         }
-        var host = document.getElementById("expenses-tbody-host");
-        if (host) {
-          host.addEventListener("click", function (ev) {
-            var t = ev.target;
-            if (!t) return;
-            function closestAttr(name) {
-              var el = t;
-              while (el && el !== host) {
-                if (el.getAttribute && el.getAttribute(name)) return el;
-                el = el.parentElement;
-              }
-              return null;
-            }
-            var edEl = closestAttr("data-expense-edit");
-            if (edEl) {
-              var eid = edEl.getAttribute("data-expense-edit");
-              var ex = expenseEditorState.expenses.find(function (x) {
-                return x.id === eid;
-              });
-              if (ex) openExpenseModalEdit(ex);
-              return;
-            }
-            var delEl = closestAttr("data-expense-delete");
-            if (delEl) {
-              var did = delEl.getAttribute("data-expense-delete");
-              if (!confirm(ui("expensesDeleteConfirm"))) return;
-              var F = window.AppFirebase;
-              if (!F || !F.db) return;
-              F.db
-                .collection("contractExpenses")
-                .doc(did)
-                .delete()
-                .then(function () {
-                  var spr = document.getElementById("screen-projects");
-                  if (spr && spr.classList.contains("is-visible")) {
-                    loadProjectsScreen();
-                  }
-                  return loadProjectExpensesScreen();
-                })
-                .catch(function (e) {
-                  showExpenseAlert(e && e.message ? e.message : String(e));
-                });
-            }
+        var saveBtn = document.getElementById("expenses-save-grid-btn");
+        if (saveBtn) {
+          saveBtn.addEventListener("click", function () {
+            saveExpensesEntryGrid();
           });
-        }
-        var expSave = document.getElementById("expense-modal-save");
-        if (expSave) {
-          expSave.addEventListener("click", function () {
-            var F = window.AppFirebase;
-            if (!F || !F.db) return;
-            var pid = expenseEditorState.projectId;
-            var dateVal = (document.getElementById("expense-modal-date").value || "").trim();
-            var lineCode = (document.getElementById("expense-modal-line").value || "").trim();
-            var amount = parseFloat(document.getElementById("expense-modal-amount").value);
-            var desc = (document.getElementById("expense-modal-desc").value || "").trim();
-            if (!dateVal) {
-              showExpenseModalError(ui("expenseErrorDate"));
-              return;
-            }
-            if (!lineCode) {
-              showExpenseModalError(ui("expenseErrorLine"));
-              return;
-            }
-            if (isNaN(amount) || amount < 0) {
-              showExpenseModalError(ui("expenseErrorAmount"));
-              return;
-            }
-            showExpenseModalError("");
-            expSave.disabled = true;
-            var payload = {
-              projectId: pid,
-              budgetLineCode: lineCode,
-              amount: amount,
-              expenseDate: dateVal,
-              description: desc,
-              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-            var promise;
-            if (expenseEditorState.modalMode === "edit" && expenseEditorState.editId) {
-              promise = F.db.collection("contractExpenses").doc(expenseEditorState.editId).set(payload, {
-                merge: true
-              });
-            } else {
-              payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-              promise = F.db.collection("contractExpenses").add(payload);
-            }
-            promise
-              .then(function () {
-                closeExpenseModal();
-                showExpenseSuccess(ui("expensesSaveOk"));
-                var spr = document.getElementById("screen-projects");
-                if (spr && spr.classList.contains("is-visible")) {
-                  loadProjectsScreen();
-                }
-                return loadProjectExpensesScreen();
-              })
-              .catch(function (e) {
-                showExpenseModalError(e && e.message ? e.message : String(e));
-              })
-              .then(function () {
-                expSave.disabled = false;
-              });
-          });
-        }
-        var expCancel = document.getElementById("expense-modal-cancel");
-        if (expCancel) {
-          expCancel.addEventListener("click", function () {
-            closeExpenseModal();
-            showExpenseModalError("");
-          });
-        }
-        var expModal = document.getElementById("expense-modal");
-        if (expModal) {
-          var bd = expModal.querySelector(".setup-modal__backdrop");
-          if (bd) {
-            bd.addEventListener("click", function () {
-              closeExpenseModal();
-              showExpenseModalError("");
-            });
-          }
         }
       })();
 
@@ -6863,21 +6965,12 @@
                 var bd = bdoc.data() || {};
                 budgetMap[bdoc.id] = {
                   status: bd.status != null ? String(bd.status) : "draft",
-                  totalAmount: typeof bd.totalAmount === "number" ? bd.totalAmount : 0
+                  totalAmount: typeof bd.totalAmount === "number" ? bd.totalAmount : 0,
+                  lines: cloneBudgetLines(bd.lines || [])
                 };
               });
             }
-            var spentMap = {};
-            if (expenseSnap && expenseSnap.forEach) {
-              expenseSnap.forEach(function (edoc) {
-                var ed = edoc.data() || {};
-                var pid = ed.projectId != null ? String(ed.projectId) : "";
-                if (!pid) return;
-                var a = typeof ed.amount === "number" ? ed.amount : parseFloat(ed.amount);
-                if (isNaN(a)) a = 0;
-                spentMap[pid] = (spentMap[pid] || 0) + a;
-              });
-            }
+            var spentMap = computeProjectsSpentMap(expenseSnap, budgetMap);
             projectsScreenCache.budgetMap = budgetMap;
             projectsScreenCache.spentMap = spentMap;
 
