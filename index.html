@@ -250,7 +250,7 @@
                 </article>
               </div>
 
-              <div class="list-panel">
+              <div class="list-panel companies-panel">
                 <div class="list-panel__head">
                   <div class="list-panel__title-row">
                     <h3 class="list-panel__title" id="companies-panel-title"></h3>
@@ -267,9 +267,9 @@
 
                 <div id="companies-loading" class="list-loading list-loading--panel" hidden></div>
 
-                <div id="companies-main" class="list-panel__body">
-                  <div class="table-scroll table-scroll--list" id="companies-table-wrap">
-                    <table class="data-table data-table--list data-table--companies" aria-labelledby="companies-panel-title">
+                <div id="companies-main" class="list-panel__body list-panel__body--table">
+                  <div class="table-scroll table-scroll--list companies-table-scroll" id="companies-table-wrap">
+                    <table class="data-table data-table--list data-table--companies companies-table" aria-labelledby="companies-panel-title">
                       <thead>
                         <tr>
                           <th id="companies-th-code" scope="col" class="col-code"></th>
@@ -4548,12 +4548,13 @@
         visible.forEach(function (row) {
           var d = row.d;
           var tr = document.createElement("tr");
+          tr.className = "companies-table-row";
 
           var tdCode = document.createElement("td");
           tdCode.className = "col-code";
           var codeSpan = document.createElement("span");
           codeSpan.className = "cell-code";
-          codeSpan.setAttribute("dir", "ltr");
+          markLatinNumberEl(codeSpan);
           codeSpan.textContent =
             d.code != null && String(d.code).trim() ? String(d.code).trim() : "—";
           tdCode.appendChild(codeSpan);
@@ -4588,6 +4589,7 @@
             mail.textContent = em;
             tdEm.appendChild(mail);
           } else {
+            tdEm.classList.add("companies-cell-muted");
             tdEm.textContent = "—";
           }
 
@@ -4608,16 +4610,16 @@
           tdProj.appendChild(badge);
 
           var tdAct = document.createElement("td");
-          tdAct.className = "table-actions col-actions";
+          tdAct.className = "table-actions col-actions companies-row-actions";
           var btnEd = document.createElement("button");
           btnEd.type = "button";
-          btnEd.className = "btn btn--small btn--ghost";
+          btnEd.className = "btn btn--small btn--ghost companies-btn-edit";
           btnEd.textContent = ui("companiesEdit");
           btnEd.setAttribute("data-company-edit", row.id);
           btnEd.setAttribute("aria-label", ui("companiesEdit"));
           var btnDel = document.createElement("button");
           btnDel.type = "button";
-          btnDel.className = "btn btn--small btn--danger";
+          btnDel.className = "btn btn--small btn--danger companies-btn-delete";
           btnDel.textContent = ui("companiesDelete");
           btnDel.setAttribute("data-company-delete", row.id);
           btnDel.setAttribute("aria-label", ui("companiesDelete"));
