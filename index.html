@@ -118,37 +118,110 @@
         <!-- ===== SCREEN: DASHBOARD ===== -->
         <section class="screen is-visible" id="screen-dashboard" data-title="لوحة التحكم">
           <div class="dashboard-layout">
-          <div class="dashboard-hero">
-            <h2 class="dashboard-hero__title" id="dashboard-hero-title">لوحة التحكم</h2>
-            <p class="dashboard-hero__desc" id="dashboard-hero-desc">نظرة عامة مختصرة على النظام؛ سيتم توسيع المحتوى لاحقاً.</p>
-          </div>
-          <div id="dashboard-signin-hint" class="currencies-hint" role="status" hidden></div>
-          <div class="dashboard-grid">
-            <div class="stat-card stat-card--accent">
-              <p class="stat-card__label" id="stat-lbl-cloud">الاتصال السحابي</p>
-              <p class="stat-card__value" id="firebase-init-status">جاري تهيئة Firebase…</p>
+            <header class="dashboard-header">
+              <div class="dashboard-header__text">
+                <h2 class="dashboard-hero__title" id="dashboard-hero-title">لوحة التحكم</h2>
+                <p class="dashboard-hero__desc" id="dashboard-hero-desc"></p>
+              </div>
+              <div class="dashboard-cloud" id="dashboard-cloud-wrap" role="status" aria-live="polite">
+                <span class="dashboard-cloud__dot" id="firebase-status-dot" aria-hidden="true"></span>
+                <span class="dashboard-cloud__label" id="stat-lbl-cloud"></span>
+                <span class="dashboard-cloud__value" id="firebase-init-status"></span>
+              </div>
+            </header>
+
+            <div id="dashboard-signin-hint" class="dashboard-banner dashboard-banner--warn" role="status" hidden></div>
+            <div id="dashboard-loading" class="dashboard-loading" hidden></div>
+
+            <div class="dashboard-kpi-grid" id="dashboard-kpi-grid">
+              <article class="dash-kpi">
+                <p class="dash-kpi__label" id="dash-lbl-companies"></p>
+                <p class="dash-kpi__value" id="dash-kpi-companies">—</p>
+              </article>
+              <article class="dash-kpi dash-kpi--primary">
+                <p class="dash-kpi__label" id="dash-lbl-contracts"></p>
+                <p class="dash-kpi__value" id="dash-kpi-contracts">—</p>
+              </article>
+              <article class="dash-kpi dash-kpi--success">
+                <p class="dash-kpi__label" id="dash-lbl-approved"></p>
+                <p class="dash-kpi__value" id="dash-kpi-approved">—</p>
+              </article>
+              <article class="dash-kpi dash-kpi--warn">
+                <p class="dash-kpi__label" id="dash-lbl-no-budget"></p>
+                <p class="dash-kpi__value" id="dash-kpi-no-budget">—</p>
+              </article>
+              <article class="dash-kpi">
+                <p class="dash-kpi__label" id="dash-lbl-expenses"></p>
+                <p class="dash-kpi__value" id="dash-kpi-expenses">—</p>
+              </article>
+              <article class="dash-kpi dash-kpi--accent">
+                <p class="dash-kpi__label" id="dash-lbl-spent"></p>
+                <p class="dash-kpi__value" id="dash-kpi-spent" dir="ltr">—</p>
+              </article>
             </div>
-            <div class="stat-card">
-              <p class="stat-card__label" id="stat-lbl-modules">الوحدات</p>
-              <p class="stat-card__value" id="stat-modules-value">شركات · مشاريع · عملات</p>
-              <p class="stat-card__hint" id="stat-modules-hint">أسعار صرف · مستخدمون</p>
+
+            <div class="dashboard-panels">
+              <section class="dashboard-panel" aria-labelledby="dashboard-budget-title">
+                <h3 class="dashboard-panel__title" id="dashboard-budget-title"></h3>
+                <p class="dashboard-panel__lead" id="dashboard-budget-lead"></p>
+                <div class="dash-progress">
+                  <div class="dash-progress__head">
+                    <span id="dash-progress-approved-lbl"></span>
+                    <strong id="dash-progress-approved-pct" dir="ltr">0%</strong>
+                  </div>
+                  <div class="dash-progress__track" role="presentation">
+                    <div class="dash-progress__bar dash-progress__bar--approved" id="dash-progress-approved-bar" style="width:0%"></div>
+                  </div>
+                </div>
+                <ul class="dash-breakdown">
+                  <li class="dash-breakdown__item">
+                    <span class="dash-breakdown__key" id="dash-br-draft-lbl"></span>
+                    <strong class="dash-breakdown__val" id="dash-kpi-draft" dir="ltr">0</strong>
+                  </li>
+                  <li class="dash-breakdown__item">
+                    <span class="dash-breakdown__key" id="dash-br-approved-lbl"></span>
+                    <strong class="dash-breakdown__val" id="dash-kpi-approved-inline" dir="ltr">0</strong>
+                  </li>
+                  <li class="dash-breakdown__item">
+                    <span class="dash-breakdown__key" id="dash-br-none-lbl"></span>
+                    <strong class="dash-breakdown__val" id="dash-kpi-none-budget" dir="ltr">0</strong>
+                  </li>
+                </ul>
+              </section>
+
+              <section class="dashboard-panel dashboard-panel--alerts" aria-labelledby="dashboard-alerts-title">
+                <h3 class="dashboard-panel__title" id="dashboard-alerts-title"></h3>
+                <ul class="dashboard-alerts" id="dashboard-alerts-list"></ul>
+              </section>
+
+              <section class="dashboard-panel dashboard-panel--shortcuts" aria-labelledby="dashboard-shortcuts-title">
+                <h3 class="dashboard-panel__title" id="dashboard-shortcuts-title"></h3>
+                <div class="dashboard-shortcuts">
+                  <button type="button" class="dashboard-shortcut" data-dash-nav="companies">
+                    <span class="dashboard-shortcut__icon" aria-hidden="true">🏢</span>
+                    <span class="dashboard-shortcut__text" id="dash-short-companies"></span>
+                  </button>
+                  <button type="button" class="dashboard-shortcut" data-dash-nav="projects">
+                    <span class="dashboard-shortcut__icon" aria-hidden="true">📋</span>
+                    <span class="dashboard-shortcut__text" id="dash-short-projects"></span>
+                  </button>
+                  <button type="button" class="dashboard-shortcut" data-dash-nav="currencies">
+                    <span class="dashboard-shortcut__icon" aria-hidden="true">💱</span>
+                    <span class="dashboard-shortcut__text" id="dash-short-currencies"></span>
+                  </button>
+                  <button type="button" class="dashboard-shortcut" data-dash-nav="fx-rates">
+                    <span class="dashboard-shortcut__icon" aria-hidden="true">📈</span>
+                    <span class="dashboard-shortcut__text" id="dash-short-fx"></span>
+                  </button>
+                </div>
+              </section>
             </div>
-            <div class="stat-card">
-              <p class="stat-card__label" id="stat-lbl-reports">التقارير</p>
-              <p class="stat-card__value" id="stat-reports-value">قيد التطوير</p>
-            </div>
-          </div>
-          <div class="status-panel">
-            <h3 class="status-panel__title" id="dashboard-status-title">تنبيهات متوقعة</h3>
-            <p class="status-line" id="dashboard-note-1">مؤشرات المشاريع والعملات (قيد الإضافة).</p>
-            <p class="status-line" id="dashboard-note-2">أسعار صرف ناقصة أو بيانات تحتاج مراجعة.</p>
-          </div>
           </div>
         </section>
 
         <!-- ===== SCREEN: COMPANIES ===== -->
         <section class="screen" id="screen-companies" data-title="الشركات">
-          <div class="placeholder-card placeholder-card--fill">
+          <div class="placeholder-card placeholder-card--fill list-screen">
             <div class="page-head page-head--split">
               <div class="page-head__text">
                 <h2 id="companies-title">الشركات</h2>
@@ -158,24 +231,52 @@
                 <button type="button" class="btn btn--primary" id="companies-add-btn"></button>
               </div>
             </div>
+
             <div id="companies-alert" class="setup-error" role="alert" hidden></div>
-            <div id="companies-loading" class="currencies-loading"></div>
-            <div id="companies-main" class="screen-body" hidden>
-              <div class="table-scroll">
-              <table class="data-table" aria-label="الشركات">
-                <thead>
-                  <tr>
-                    <th id="companies-th-code" scope="col"></th>
-                    <th id="companies-th-name-ar" scope="col"></th>
-                    <th id="companies-th-name-en" scope="col"></th>
-                    <th id="companies-th-email" scope="col"></th>
-                    <th id="companies-th-actions" scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody id="companies-tbody"></tbody>
-              </table>
+
+            <div class="list-screen-stats" id="companies-stats" hidden>
+              <article class="list-stat list-stat--primary">
+                <span class="list-stat__label" id="companies-stat-total-lbl"></span>
+                <strong class="list-stat__value" id="companies-stat-total">0</strong>
+              </article>
+              <article class="list-stat">
+                <span class="list-stat__label" id="companies-stat-contracts-lbl"></span>
+                <strong class="list-stat__value" id="companies-stat-contracts">0</strong>
+              </article>
+            </div>
+
+            <div class="list-toolbar" id="companies-toolbar" hidden>
+              <label class="list-search" for="companies-search">
+                <span class="list-search__icon" aria-hidden="true">⌕</span>
+                <input type="search" id="companies-search" autocomplete="off" />
+              </label>
+              <p class="list-toolbar__meta" id="companies-count-meta" aria-live="polite"></p>
+            </div>
+
+            <div id="companies-loading" class="list-loading" hidden></div>
+
+            <div id="companies-main" class="screen-body list-screen-body" hidden>
+              <div class="table-scroll table-scroll--list" id="companies-table-wrap">
+                <table class="data-table data-table--list data-table--companies" aria-labelledby="companies-title">
+                  <thead>
+                    <tr>
+                      <th id="companies-th-code" scope="col"></th>
+                      <th id="companies-th-name-ar" scope="col"></th>
+                      <th id="companies-th-name-en" scope="col"></th>
+                      <th id="companies-th-email" scope="col"></th>
+                      <th id="companies-th-projects" scope="col"></th>
+                      <th id="companies-th-actions" scope="col" class="col-actions"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="companies-tbody"></tbody>
+                </table>
               </div>
-              <p id="companies-empty" class="currencies-hint" hidden></p>
+              <div id="companies-empty" class="list-empty" hidden>
+                <p class="list-empty__title" id="companies-empty-title"></p>
+                <p class="list-empty__lead" id="companies-empty-lead"></p>
+                <button type="button" class="btn btn--primary" id="companies-empty-add"></button>
+              </div>
+              <p id="companies-filter-empty" class="list-filter-empty" hidden></p>
             </div>
           </div>
         </section>
@@ -844,9 +945,19 @@
         window.AppFirebase = { error: "firebase SDK not loaded" };
         var failEl = document.getElementById("firebase-init-status");
         if (failEl) {
-          failEl.textContent = "تعذّر تحميل Firebase SDK";
+          failEl.textContent = "SDK";
           failEl.classList.remove("is-ok");
           failEl.classList.add("is-error");
+        }
+        var failDot = document.getElementById("firebase-status-dot");
+        var failWrap = document.getElementById("dashboard-cloud-wrap");
+        if (failDot) {
+          failDot.classList.add("is-error");
+          failDot.classList.remove("is-ok", "is-pending");
+        }
+        if (failWrap) {
+          failWrap.classList.add("is-error");
+          failWrap.classList.remove("is-ok", "is-pending");
         }
         return;
       }
@@ -871,10 +982,20 @@
       };
 
       var el = document.getElementById("firebase-init-status");
+      var dot = document.getElementById("firebase-status-dot");
+      var wrap = document.getElementById("dashboard-cloud-wrap");
       if (el) {
-        el.textContent = "تم تهيئة Firebase — المشروع: " + firebaseConfig.projectId;
+        el.textContent = firebaseConfig.projectId;
         el.classList.add("is-ok");
         el.classList.remove("is-error");
+      }
+      if (dot) {
+        dot.classList.add("is-ok");
+        dot.classList.remove("is-error", "is-pending");
+      }
+      if (wrap) {
+        wrap.classList.add("is-ok");
+        wrap.classList.remove("is-error", "is-pending");
       }
     })();
   </script>
@@ -926,21 +1047,48 @@
           ui: {
             menuAria: "القائمة",
             dashboardH2: "لوحة التحكم",
-            dashboardP: "نظرة عامة مختصرة على النظام؛ سيتم توسيع المحتوى لاحقاً.",
-            dashboardLi1: "مؤشرات المشاريع والعملات (قيد الإضافة).",
-            dashboardLi2:
-              "تنبيهات محتملة: أسعار صرف ناقصة لعملة ثانوية، أو بيانات مشروع/شركة تحتاج مراجعة.",
-            dashboardStatCloud: "الاتصال السحابي",
-            dashboardStatModules: "الوحدات",
-            dashboardStatModulesVal: "شركات · مشاريع · عملات",
-            dashboardStatModulesHint: "أسعار صرف · مستخدمون",
-            dashboardStatReports: "التقارير",
-            dashboardStatReportsVal: "قيد التطوير",
-            dashboardStatusTitle: "تنبيهات متوقعة",
+            dashboardP: "ملخص فوري للعقود والموازنات والمصروفات — راقب الحالة وانتقل بسرعة إلى المهام الشائعة.",
+            dashboardStatCloud: "السحابة",
+            dashboardCloudPending: "جاري الاتصال…",
+            dashboardCloudOk: "متصل",
+            dashboardCloudFail: "غير متصل",
+            dashboardLoading: "جاري تحديث المؤشرات…",
+            dashboardKpiCompanies: "الشركات",
+            dashboardKpiContracts: "العقود",
+            dashboardKpiApproved: "موازنات معتمدة",
+            dashboardKpiNoBudget: "بلا موازنة",
+            dashboardKpiExpenses: "قيود المصروف",
+            dashboardKpiTotalSpent: "إجمالي المنفق",
+            dashboardSectionBudget: "حالة الموازنات",
+            dashboardBudgetLead: "نسبة العقود ذات موازنة معتمدة من إجمالي العقود المسجّلة.",
+            dashboardProgressApproved: "تغطية الاعتماد",
+            dashboardBrDraft: "مسودة",
+            dashboardBrApproved: "معتمدة",
+            dashboardBrNone: "بدون موازنة",
+            dashboardSectionAlerts: "تنبيهات وملاحظات",
+            dashboardSectionShortcuts: "اختصارات",
+            dashboardShortCompanies: "الشركات",
+            dashboardShortProjects: "العقود",
+            dashboardShortCurrencies: "العملات",
+            dashboardShortFx: "أسعار الصرف",
+            dashboardAlertOk: "لا توجد تنبيهات عاجلة — البيانات الأساسية تبدو مكتملة.",
+            dashboardAlertNoContracts: "لا توجد عقود مسجّلة بعد. ابدأ بإضافة شركة ثم عقد.",
+            dashboardAlertNoBudget: "عقد/عقود بلا موازنة — أنشئ الموازنة من جدول العقود.",
+            dashboardAlertDraftBudget: "موازنة/موازنات بمسودة — راجعها واعتمدها عند الجاهزية.",
+            dashboardAlertExpensesNoBudget: "توجد مصروفات دون موازنة معتمدة — راجع العقود المعنية.",
+            dashboardAlertSetup: "أكمل إعداد أول تشغيل (العملة الأساسية والمسؤول) لاستخدام النظام بالكامل.",
             headerSubtitle: "رقابة تكاليف مشاريع المقاولات",
             companiesH2: "الشركات",
             companiesLead:
-              "كل مشروع سيرتبط لاحقًا بشركة من هذا الجدول. الحقول: الاسم بالعربية، الاسم بالإنجليزية، والبريد الإلكتروني.",
+              "سجل الشركات المالكة للعقود. كل عقد يرتبط بشركة واحدة — الاسم بالعربية والإنجليزية والبريد إلزاميان.",
+            companiesStatTotal: "الشركات",
+            companiesStatContracts: "عقود مرتبطة",
+            companiesSearchPlaceholder: "بحث بالرمز، الاسم، أو البريد…",
+            companiesColProjects: "العقود",
+            companiesEmptyTitle: "لا توجد شركات بعد",
+            companiesEmptyLead: "أضف شركة لتتمكن من ربط العقود بها.",
+            companiesEmptyAdd: "إضافة أول شركة",
+            companiesFilterEmpty: "لا توجد نتائج مطابقة للبحث.",
             companiesAddBtn: "إضافة شركة",
             companiesColCode: "الرمز",
             companiesColNameAr: "الاسم (عربي)",
@@ -1277,21 +1425,48 @@
           ui: {
             menuAria: "Menu",
             dashboardH2: "Dashboard",
-            dashboardP: "A brief overview of the system; more content will be added later.",
-            dashboardLi1: "Project and currency KPIs (coming soon).",
-            dashboardLi2:
-              "Potential alerts: missing FX rates for a secondary currency, or project/company data that needs review.",
-            dashboardStatCloud: "Cloud connection",
-            dashboardStatModules: "Modules",
-            dashboardStatModulesVal: "Companies · Projects · Currencies",
-            dashboardStatModulesHint: "FX rates · Users",
-            dashboardStatReports: "Reports",
-            dashboardStatReportsVal: "In development",
-            dashboardStatusTitle: "Expected alerts",
+            dashboardP: "At-a-glance contracts, budgets, and expenses — spot issues and jump to common tasks.",
+            dashboardStatCloud: "Cloud",
+            dashboardCloudPending: "Connecting…",
+            dashboardCloudOk: "Connected",
+            dashboardCloudFail: "Offline",
+            dashboardLoading: "Refreshing metrics…",
+            dashboardKpiCompanies: "Companies",
+            dashboardKpiContracts: "Contracts",
+            dashboardKpiApproved: "Approved budgets",
+            dashboardKpiNoBudget: "No budget",
+            dashboardKpiExpenses: "Expense entries",
+            dashboardKpiTotalSpent: "Total spent",
+            dashboardSectionBudget: "Budget status",
+            dashboardBudgetLead: "Share of contracts with an approved budget.",
+            dashboardProgressApproved: "Approval coverage",
+            dashboardBrDraft: "Draft",
+            dashboardBrApproved: "Approved",
+            dashboardBrNone: "No budget",
+            dashboardSectionAlerts: "Alerts & notes",
+            dashboardSectionShortcuts: "Quick links",
+            dashboardShortCompanies: "Companies",
+            dashboardShortProjects: "Contracts",
+            dashboardShortCurrencies: "Currencies",
+            dashboardShortFx: "FX rates",
+            dashboardAlertOk: "No urgent alerts — core data looks complete.",
+            dashboardAlertNoContracts: "No contracts yet. Add a company, then a contract.",
+            dashboardAlertNoBudget: "contract(s) without a budget — open the contracts list to create one.",
+            dashboardAlertDraftBudget: "draft budget(s) — review and approve when ready.",
+            dashboardAlertExpensesNoBudget: "Expenses exist without an approved budget — check affected contracts.",
+            dashboardAlertSetup: "Complete first-run setup (base currency and admin) to use the full system.",
             headerSubtitle: "Construction project cost control",
             companiesH2: "Companies",
             companiesLead:
-              "Each project will later link to a company from this list. Fields: Arabic name, English name, and email.",
+              "Register companies that own contracts. Each contract links to one company — Arabic name, English name, and email are required.",
+            companiesStatTotal: "Companies",
+            companiesStatContracts: "Linked contracts",
+            companiesSearchPlaceholder: "Search code, name, or email…",
+            companiesColProjects: "Contracts",
+            companiesEmptyTitle: "No companies yet",
+            companiesEmptyLead: "Add a company before linking contracts to it.",
+            companiesEmptyAdd: "Add first company",
+            companiesFilterEmpty: "No rows match your search.",
             companiesAddBtn: "Add company",
             companiesColCode: "Code",
             companiesColNameAr: "Name (Arabic)",
@@ -1689,24 +1864,53 @@
         if (heroDesc) heroDesc.textContent = ui("dashboardP");
         var statCloud = document.getElementById("stat-lbl-cloud");
         if (statCloud) statCloud.textContent = ui("dashboardStatCloud");
-        var statMod = document.getElementById("stat-lbl-modules");
-        if (statMod) statMod.textContent = ui("dashboardStatModules");
-        var statModVal = document.getElementById("stat-modules-value");
-        if (statModVal) statModVal.textContent = ui("dashboardStatModulesVal");
-        var statModHint = document.getElementById("stat-modules-hint");
-        if (statModHint) statModHint.textContent = ui("dashboardStatModulesHint");
-        var statRep = document.getElementById("stat-lbl-reports");
-        if (statRep) statRep.textContent = ui("dashboardStatReports");
-        var statRepVal = document.getElementById("stat-reports-value");
-        if (statRepVal) statRepVal.textContent = ui("dashboardStatReportsVal");
-        var statusTitle = document.getElementById("dashboard-status-title");
-        if (statusTitle) statusTitle.textContent = ui("dashboardStatusTitle");
-        var note1 = document.getElementById("dashboard-note-1");
-        if (note1) note1.textContent = ui("dashboardLi1");
-        var note2 = document.getElementById("dashboard-note-2");
-        if (note2) note2.textContent = ui("dashboardLi2");
+        var dashLoad = document.getElementById("dashboard-loading");
+        if (dashLoad) dashLoad.textContent = ui("dashboardLoading");
+        var dlblMap = [
+          ["dash-lbl-companies", "dashboardKpiCompanies"],
+          ["dash-lbl-contracts", "dashboardKpiContracts"],
+          ["dash-lbl-approved", "dashboardKpiApproved"],
+          ["dash-lbl-no-budget", "dashboardKpiNoBudget"],
+          ["dash-lbl-expenses", "dashboardKpiExpenses"],
+          ["dash-lbl-spent", "dashboardKpiTotalSpent"]
+        ];
+        dlblMap.forEach(function (pair) {
+          var el = document.getElementById(pair[0]);
+          if (el) el.textContent = ui(pair[1]);
+        });
+        var dbt = document.getElementById("dashboard-budget-title");
+        if (dbt) dbt.textContent = ui("dashboardSectionBudget");
+        var dbl = document.getElementById("dashboard-budget-lead");
+        if (dbl) dbl.textContent = ui("dashboardBudgetLead");
+        var dpr = document.getElementById("dash-progress-approved-lbl");
+        if (dpr) dpr.textContent = ui("dashboardProgressApproved");
+        var brMap = [
+          ["dash-br-draft-lbl", "dashboardBrDraft"],
+          ["dash-br-approved-lbl", "dashboardBrApproved"],
+          ["dash-br-none-lbl", "dashboardBrNone"]
+        ];
+        brMap.forEach(function (pair) {
+          var el = document.getElementById(pair[0]);
+          if (el) el.textContent = ui(pair[1]);
+        });
+        var dat = document.getElementById("dashboard-alerts-title");
+        if (dat) dat.textContent = ui("dashboardSectionAlerts");
+        var dst = document.getElementById("dashboard-shortcuts-title");
+        if (dst) dst.textContent = ui("dashboardSectionShortcuts");
+        var dsMap = [
+          ["dash-short-companies", "dashboardShortCompanies"],
+          ["dash-short-projects", "dashboardShortProjects"],
+          ["dash-short-currencies", "dashboardShortCurrencies"],
+          ["dash-short-fx", "dashboardShortFx"]
+        ];
+        dsMap.forEach(function (pair) {
+          var el = document.getElementById(pair[0]);
+          if (el) el.textContent = ui(pair[1]);
+        });
         var dsh = document.getElementById("dashboard-signin-hint");
         if (dsh) dsh.textContent = ui("dashboardSignInHint");
+        var kpiGrid = document.getElementById("dashboard-kpi-grid");
+        if (kpiGrid) kpiGrid.setAttribute("aria-label", ui("dashboardH2"));
 
         // Companies
         var comp = document.getElementById("screen-companies");
@@ -1719,8 +1923,20 @@
           if (cload) cload.textContent = ui("companiesLoading");
           var cadd = document.getElementById("companies-add-btn");
           if (cadd) cadd.textContent = ui("companiesAddBtn");
-          var cempty = document.getElementById("companies-empty");
-          if (cempty) cempty.textContent = ui("companiesEmpty");
+          var cstT = document.getElementById("companies-stat-total-lbl");
+          if (cstT) cstT.textContent = ui("companiesStatTotal");
+          var cstC = document.getElementById("companies-stat-contracts-lbl");
+          if (cstC) cstC.textContent = ui("companiesStatContracts");
+          var csearch = document.getElementById("companies-search");
+          if (csearch) csearch.placeholder = ui("companiesSearchPlaceholder");
+          var cemptyT = document.getElementById("companies-empty-title");
+          if (cemptyT) cemptyT.textContent = ui("companiesEmptyTitle");
+          var cemptyL = document.getElementById("companies-empty-lead");
+          if (cemptyL) cemptyL.textContent = ui("companiesEmptyLead");
+          var cemptyA = document.getElementById("companies-empty-add");
+          if (cemptyA) cemptyA.textContent = ui("companiesEmptyAdd");
+          var cfilterE = document.getElementById("companies-filter-empty");
+          if (cfilterE) cfilterE.textContent = ui("companiesFilterEmpty");
           var thc = document.getElementById("companies-th-code");
           if (thc) thc.textContent = ui("companiesColCode");
           var tha = document.getElementById("companies-th-name-ar");
@@ -1729,6 +1945,8 @@
           if (the) the.textContent = ui("companiesColNameEn");
           var thm = document.getElementById("companies-th-email");
           if (thm) thm.textContent = ui("companiesColEmail");
+          var thpr = document.getElementById("companies-th-projects");
+          if (thpr) thpr.textContent = ui("companiesColProjects");
           var thac = document.getElementById("companies-th-actions");
           if (thac) thac.textContent = ui("companiesColActions");
           var cmt = document.getElementById("company-modal-title");
@@ -2212,6 +2430,11 @@
           if (unitsIn) unitsIn.placeholder = ui("currencyUnitsPlaceholder");
         }
 
+        var scomp = document.getElementById("screen-companies");
+        if (scomp && scomp.classList.contains("is-visible")) {
+          renderCompaniesTable();
+          updateCompaniesListMeta();
+        }
         var spr = document.getElementById("screen-projects");
         if (spr && spr.classList.contains("is-visible")) {
           loadProjectsScreen();
@@ -2230,6 +2453,13 @@
         var sdash = document.getElementById("screen-dashboard");
         if (sdash && sdash.classList.contains("is-visible")) {
           loadDashboardStats();
+        } else if (typeof updateDashboardCloudStatus === "function") {
+          var F0 = window.AppFirebase;
+          if (F0 && F0.projectId) {
+            updateDashboardCloudStatus(F0.projectId, "ok");
+          } else {
+            updateDashboardCloudStatus(ui("dashboardCloudPending"), "pending");
+          }
         }
       }
 
@@ -2422,14 +2652,12 @@
 
         function applySettingsToUI(data) {
           if (!data) return;
-          var st = document.getElementById("firebase-init-status");
-          if (st && F.projectId) {
-            st.textContent =
-              "تم تهيئة Firebase — المشروع: " +
-              F.projectId +
-              (data.baseCurrencyCode ? " — العملة الأساسية: " + data.baseCurrencyCode : "");
-            st.classList.add("is-ok");
-            st.classList.remove("is-error");
+          if (F.projectId && typeof updateDashboardCloudStatus === "function") {
+            var cloudTxt = F.projectId;
+            if (data.baseCurrencyCode) {
+              cloudTxt += " · " + String(data.baseCurrencyCode).toUpperCase();
+            }
+            updateDashboardCloudStatus(cloudTxt, "ok");
           }
           refreshDashboardSignInHint();
         }
@@ -4059,6 +4287,198 @@
 
       var companyModalMode = "add";
       var companyEditId = null;
+      var companiesScreenCache = {
+        rows: [],
+        projectCountByCompany: {},
+        totalProjects: 0
+      };
+
+      function getCompaniesSearchQuery() {
+        var inp = document.getElementById("companies-search");
+        return inp ? String(inp.value || "").trim().toLowerCase() : "";
+      }
+
+      function filterCompaniesRows(rows, q) {
+        if (!q) return rows.slice();
+        return rows.filter(function (row) {
+          var d = row.d || {};
+          var parts = [
+            d.code,
+            d.nameAr,
+            d.nameEn,
+            d.email
+          ];
+          return parts.some(function (p) {
+            return p != null && String(p).toLowerCase().indexOf(q) !== -1;
+          });
+        });
+      }
+
+      function updateCompaniesListMeta() {
+        var meta = document.getElementById("companies-count-meta");
+        if (!meta) return;
+        var total = companiesScreenCache.rows.length;
+        var q = getCompaniesSearchQuery();
+        var shown = filterCompaniesRows(companiesScreenCache.rows, q).length;
+        if (!total) {
+          meta.textContent = "";
+          return;
+        }
+        if (currentLang === "en") {
+          meta.textContent = q
+            ? "Showing " + shown + " of " + total
+            : total + (total === 1 ? " company" : " companies");
+        } else {
+          meta.textContent = q
+            ? "عرض " + shown + " من " + total
+            : total + " شركة";
+        }
+      }
+
+      function updateCompaniesStats() {
+        var st = document.getElementById("companies-stats");
+        var totalEl = document.getElementById("companies-stat-total");
+        var contractsEl = document.getElementById("companies-stat-contracts");
+        var n = companiesScreenCache.rows.length;
+        if (totalEl) totalEl.textContent = String(n);
+        if (contractsEl) contractsEl.textContent = String(companiesScreenCache.totalProjects || 0);
+        if (st) {
+          if (n > 0) st.removeAttribute("hidden");
+          else st.setAttribute("hidden", "");
+        }
+      }
+
+      function openCompanyModalEdit(row) {
+        if (!row) return;
+        companyModalMode = "edit";
+        companyEditId = row.id;
+        var titleEl = document.getElementById("company-modal-title");
+        if (titleEl) titleEl.textContent = ui("companiesModalTitleEdit");
+        var iar = document.getElementById("company-modal-name-ar");
+        var ien = document.getElementById("company-modal-name-en");
+        var iem = document.getElementById("company-modal-email");
+        var icod = document.getElementById("company-modal-code");
+        if (iar) iar.value = row.d.nameAr != null ? String(row.d.nameAr) : "";
+        if (ien) ien.value = row.d.nameEn != null ? String(row.d.nameEn) : "";
+        if (iem) iem.value = row.d.email != null ? String(row.d.email) : "";
+        if (icod) {
+          icod.value =
+            row.d.code != null && String(row.d.code).trim() ? String(row.d.code).trim() : "—";
+        }
+        showCompanyModalError("");
+        var mod = document.getElementById("company-modal");
+        if (mod) {
+          mod.removeAttribute("hidden");
+          syncModalBodyScrollLock();
+        }
+      }
+
+      function renderCompaniesTable() {
+        var tbody = document.getElementById("companies-tbody");
+        var emptyEl = document.getElementById("companies-empty");
+        var filterEmpty = document.getElementById("companies-filter-empty");
+        var tableWrap = document.getElementById("companies-table-wrap");
+        var toolbar = document.getElementById("companies-toolbar");
+        if (!tbody) return;
+
+        var rows = companiesScreenCache.rows;
+        var q = getCompaniesSearchQuery();
+        var visible = filterCompaniesRows(rows, q);
+
+        tbody.innerHTML = "";
+        visible.forEach(function (row) {
+          var d = row.d;
+          var tr = document.createElement("tr");
+          tr.className = "data-table__row";
+
+          var tdCode = document.createElement("td");
+          tdCode.className = "col-code";
+          var codeSpan = document.createElement("span");
+          codeSpan.className = "cell-code";
+          codeSpan.setAttribute("dir", "ltr");
+          codeSpan.textContent =
+            d.code != null && String(d.code).trim() ? String(d.code).trim() : "—";
+          tdCode.appendChild(codeSpan);
+
+          var tdAr = document.createElement("td");
+          tdAr.className = "col-name";
+          var arStrong = document.createElement("span");
+          arStrong.className = "cell-name-primary";
+          arStrong.textContent =
+            d.nameAr != null && String(d.nameAr).trim() ? String(d.nameAr) : "—";
+          tdAr.appendChild(arStrong);
+
+          var tdEn = document.createElement("td");
+          tdEn.className = "col-name-secondary";
+          tdEn.textContent = d.nameEn != null && String(d.nameEn).trim() ? String(d.nameEn) : "—";
+
+          var tdEm = document.createElement("td");
+          tdEm.className = "col-email";
+          var em = d.email != null ? String(d.email).trim() : "";
+          if (em) {
+            var mail = document.createElement("a");
+            mail.className = "cell-email";
+            mail.href = "mailto:" + em;
+            mail.setAttribute("dir", "ltr");
+            mail.textContent = em;
+            tdEm.appendChild(mail);
+          } else {
+            tdEm.textContent = "—";
+          }
+
+          var tdProj = document.createElement("td");
+          tdProj.className = "col-num";
+          var cnt = companiesScreenCache.projectCountByCompany[row.id] || 0;
+          var badge = document.createElement("span");
+          badge.className = "cell-count" + (cnt > 0 ? " cell-count--active" : "");
+          badge.setAttribute("dir", "ltr");
+          badge.textContent = String(cnt);
+          tdProj.appendChild(badge);
+
+          var tdAct = document.createElement("td");
+          tdAct.className = "table-actions col-actions";
+          var btnEd = document.createElement("button");
+          btnEd.type = "button";
+          btnEd.className = "btn btn--small btn--ghost";
+          btnEd.textContent = ui("companiesEdit");
+          btnEd.setAttribute("data-company-edit", row.id);
+          var btnDel = document.createElement("button");
+          btnDel.type = "button";
+          btnDel.className = "btn btn--small btn--danger";
+          btnDel.textContent = ui("companiesDelete");
+          btnDel.setAttribute("data-company-delete", row.id);
+          tdAct.appendChild(btnEd);
+          tdAct.appendChild(btnDel);
+
+          tr.appendChild(tdCode);
+          tr.appendChild(tdAr);
+          tr.appendChild(tdEn);
+          tr.appendChild(tdEm);
+          tr.appendChild(tdProj);
+          tr.appendChild(tdAct);
+          tbody.appendChild(tr);
+        });
+
+        var hasRows = rows.length > 0;
+        var hasVisible = visible.length > 0;
+        if (toolbar) {
+          if (hasRows) toolbar.removeAttribute("hidden");
+          else toolbar.setAttribute("hidden", "");
+        }
+        if (tableWrap) {
+          if (hasRows && hasVisible) tableWrap.removeAttribute("hidden");
+          else tableWrap.setAttribute("hidden", "");
+        }
+        if (emptyEl) {
+          if (!hasRows) emptyEl.removeAttribute("hidden");
+          else emptyEl.setAttribute("hidden", "");
+        }
+        if (filterEmpty) {
+          if (hasRows && q && !hasVisible) filterEmpty.removeAttribute("hidden");
+          else filterEmpty.setAttribute("hidden", "");
+        }
+        updateCompaniesListMeta();
+      }
 
       function parseCompanyCodeNumeric(code) {
         if (code == null || code === "") return NaN;
@@ -4143,7 +4563,8 @@
         var alertEl = document.getElementById("companies-alert");
         var loadingEl = document.getElementById("companies-loading");
         var mainEl = document.getElementById("companies-main");
-        var emptyEl = document.getElementById("companies-empty");
+        var statsEl = document.getElementById("companies-stats");
+        var toolbarEl = document.getElementById("companies-toolbar");
         var tbody = document.getElementById("companies-tbody");
 
         function showAlert(msg) {
@@ -4157,6 +4578,8 @@
           showAlert(currentLang === "en" ? "Firebase not ready." : "Firebase غير جاهز.");
           if (loadingEl) loadingEl.setAttribute("hidden", "");
           if (mainEl) mainEl.setAttribute("hidden", "");
+          if (statsEl) statsEl.setAttribute("hidden", "");
+          if (toolbarEl) toolbarEl.setAttribute("hidden", "");
           return;
         }
 
@@ -4166,16 +4589,24 @@
           loadingEl.textContent = ui("companiesLoading");
         }
         if (mainEl) mainEl.setAttribute("hidden", "");
-        if (emptyEl) emptyEl.setAttribute("hidden", "");
+        if (statsEl) statsEl.setAttribute("hidden", "");
+        if (toolbarEl) toolbarEl.setAttribute("hidden", "");
 
-        F.db
-          .collection("companies")
-          .get()
-          .then(function (snap) {
-            if (loadingEl) loadingEl.setAttribute("hidden", "");
+        Promise.all([F.db.collection("companies").get(), F.db.collection("projects").get()])
+          .then(function (pack) {
+            var compSnap = pack[0];
+            var projSnap = pack[1];
+            var projectCountByCompany = {};
+            var totalProjects = 0;
+            projSnap.forEach(function (doc) {
+              totalProjects++;
+              var pd = doc.data() || {};
+              var cid = pd.companyId != null ? String(pd.companyId) : "";
+              if (cid) projectCountByCompany[cid] = (projectCountByCompany[cid] || 0) + 1;
+            });
 
             var rows = [];
-            snap.forEach(function (doc) {
+            compSnap.forEach(function (doc) {
               rows.push({ id: doc.id, d: doc.data() || {} });
             });
             rows.sort(function (a, b) {
@@ -4191,112 +4622,87 @@
               return ka.localeCompare(kb);
             });
 
-            if (!tbody) return;
-            tbody.innerHTML = "";
+            companiesScreenCache.rows = rows;
+            companiesScreenCache.projectCountByCompany = projectCountByCompany;
+            companiesScreenCache.totalProjects = totalProjects;
 
-            rows.forEach(function (row) {
-              var d = row.d;
-              var tr = document.createElement("tr");
-              var tdCode = document.createElement("td");
-              tdCode.setAttribute("dir", "ltr");
-              tdCode.textContent =
-                d.code != null && String(d.code).trim() ? String(d.code).trim() : "—";
-              var tdAr = document.createElement("td");
-              tdAr.textContent = d.nameAr != null && String(d.nameAr).trim() ? String(d.nameAr) : "—";
-              var tdEn = document.createElement("td");
-              tdEn.textContent = d.nameEn != null && String(d.nameEn).trim() ? String(d.nameEn) : "—";
-              var tdEm = document.createElement("td");
-              tdEm.textContent = d.email != null && String(d.email).trim() ? String(d.email) : "—";
-              var tdAct = document.createElement("td");
-              tdAct.className = "table-actions";
-              var btnEd = document.createElement("button");
-              btnEd.type = "button";
-              btnEd.className = "btn btn--small";
-              btnEd.textContent = ui("companiesEdit");
-              btnEd.setAttribute("data-company-edit", row.id);
-              var btnDel = document.createElement("button");
-              btnDel.type = "button";
-              btnDel.className = "btn btn--small btn--danger";
-              btnDel.textContent = ui("companiesDelete");
-              btnDel.setAttribute("data-company-delete", row.id);
-              tdAct.appendChild(btnEd);
-              tdAct.appendChild(btnDel);
-              tr.appendChild(tdCode);
-              tr.appendChild(tdAr);
-              tr.appendChild(tdEn);
-              tr.appendChild(tdEm);
-              tr.appendChild(tdAct);
-              tbody.appendChild(tr);
-            });
-
-            if (emptyEl) emptyEl.hidden = rows.length > 0;
+            updateCompaniesStats();
+            renderCompaniesTable();
             if (mainEl) mainEl.removeAttribute("hidden");
 
-            tbody.onclick = function (ev) {
-              var t = ev.target;
-              if (!(t && t.getAttribute)) return;
-              var editId = t.getAttribute("data-company-edit");
-              var delId = t.getAttribute("data-company-delete");
-              if (editId) {
-                var r = rows.find(function (x) {
-                  return x.id === editId;
-                });
-                if (!r) return;
-                companyModalMode = "edit";
-                companyEditId = editId;
-                var titleEl = document.getElementById("company-modal-title");
-                if (titleEl) titleEl.textContent = ui("companiesModalTitleEdit");
-                var iar = document.getElementById("company-modal-name-ar");
-                var ien = document.getElementById("company-modal-name-en");
-                var iem = document.getElementById("company-modal-email");
-                var icod = document.getElementById("company-modal-code");
-                if (iar) iar.value = r.d.nameAr != null ? String(r.d.nameAr) : "";
-                if (ien) ien.value = r.d.nameEn != null ? String(r.d.nameEn) : "";
-                if (iem) iem.value = r.d.email != null ? String(r.d.email) : "";
-                if (icod) {
-                  icod.value =
-                    r.d.code != null && String(r.d.code).trim() ? String(r.d.code).trim() : "—";
+            if (tbody && !tbody._companyClickBound) {
+              tbody._companyClickBound = true;
+              tbody.addEventListener("click", function (ev) {
+                var t = ev.target;
+                if (!t) return;
+                function closestAttr(name) {
+                  var el = t;
+                  while (el && el !== tbody) {
+                    if (el.getAttribute && el.getAttribute(name)) return el;
+                    el = el.parentElement;
+                  }
+                  return null;
                 }
-                showCompanyModalError("");
-                var mod = document.getElementById("company-modal");
-                if (mod) {
-                  mod.removeAttribute("hidden");
-                  syncModalBodyScrollLock();
-                }
-              }
-              if (delId) {
-                if (!confirm(ui("companiesDeleteConfirm"))) return;
-                F.db
-                  .collection("projects")
-                  .where("companyId", "==", delId)
-                  .limit(1)
-                  .get()
-                  .then(function (pq) {
-                    if (!pq.empty) {
-                      alert(ui("companiesDeleteBlocked"));
-                      return null;
-                    }
-                    return F.db.collection("companies").doc(delId).delete();
-                  })
-                  .then(function (result) {
-                    if (result === null) return;
-                    return loadCompaniesScreen();
-                  })
-                  .catch(function (e) {
-                    alert(e && e.message ? e.message : String(e));
+                var edEl = closestAttr("data-company-edit");
+                if (edEl) {
+                  var editId = edEl.getAttribute("data-company-edit");
+                  var r = companiesScreenCache.rows.find(function (x) {
+                    return x.id === editId;
                   });
-              }
-            };
+                  if (r) openCompanyModalEdit(r);
+                  return;
+                }
+                var delEl = closestAttr("data-company-delete");
+                if (delEl) {
+                  var delId = delEl.getAttribute("data-company-delete");
+                  if (!confirm(ui("companiesDeleteConfirm"))) return;
+                  F.db
+                    .collection("projects")
+                    .where("companyId", "==", delId)
+                    .limit(1)
+                    .get()
+                    .then(function (pq) {
+                      if (!pq.empty) {
+                        alert(ui("companiesDeleteBlocked"));
+                        return null;
+                      }
+                      return F.db.collection("companies").doc(delId).delete();
+                    })
+                    .then(function (result) {
+                      if (result === null) return;
+                      return loadCompaniesScreen();
+                    })
+                    .catch(function (e) {
+                      alert(e && e.message ? e.message : String(e));
+                    });
+                }
+              });
+            }
           })
           .catch(function (e) {
-            if (loadingEl) loadingEl.setAttribute("hidden", "");
             showAlert(e && e.message ? e.message : String(e));
+          })
+          .then(function () {
+            if (loadingEl) loadingEl.setAttribute("hidden", "");
           });
       }
 
       document.getElementById("companies-add-btn").addEventListener("click", function () {
         openCompanyModalAdd();
       });
+
+      var companiesSearchInp = document.getElementById("companies-search");
+      if (companiesSearchInp) {
+        companiesSearchInp.addEventListener("input", function () {
+          renderCompaniesTable();
+        });
+      }
+      var companiesEmptyAdd = document.getElementById("companies-empty-add");
+      if (companiesEmptyAdd) {
+        companiesEmptyAdd.addEventListener("click", function () {
+          openCompanyModalAdd();
+        });
+      }
 
       document.getElementById("company-modal-cancel").addEventListener("click", function () {
         closeCompanyModal();
@@ -5803,9 +6209,52 @@
           });
       }
 
+      function updateDashboardCloudStatus(text, state) {
+        var el = document.getElementById("firebase-init-status");
+        var dot = document.getElementById("firebase-status-dot");
+        var wrap = document.getElementById("dashboard-cloud-wrap");
+        if (el && text != null) el.textContent = text;
+        if (dot) {
+          dot.classList.remove("is-ok", "is-error", "is-pending");
+          if (state) dot.classList.add("is-" + state);
+        }
+        if (wrap) {
+          wrap.classList.remove("is-ok", "is-error", "is-pending");
+          if (state) wrap.classList.add("is-" + state);
+        }
+      }
+
+      function setDashKpi(id, value) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        if (value == null || value === "") {
+          el.textContent = "—";
+          return;
+        }
+        el.textContent = String(value);
+      }
+
+      function renderDashboardAlerts(items) {
+        var list = document.getElementById("dashboard-alerts-list");
+        if (!list) return;
+        list.innerHTML = "";
+        (items || []).forEach(function (item) {
+          var li = document.createElement("li");
+          li.className = "dashboard-alert dashboard-alert--" + (item.type || "info");
+          li.textContent = item.text;
+          list.appendChild(li);
+        });
+      }
+
       function loadDashboardStats() {
         var F = window.AppFirebase;
-        if (!F || !F.db) return;
+        var loadEl = document.getElementById("dashboard-loading");
+        if (!F || !F.db) {
+          updateDashboardCloudStatus(ui("dashboardCloudFail"), "error");
+          return;
+        }
+        if (loadEl) loadEl.removeAttribute("hidden");
+        var setupOk = F.appSettings && F.appSettings.setupComplete === true;
         Promise.all([
           F.db.collection("projects").get(),
           F.db.collection("companies").get(),
@@ -5820,65 +6269,106 @@
             var projectCount = projSnap.size;
             var companyCount = compSnap.size;
             var approved = 0;
+            var draft = 0;
             var withBudget = 0;
-            var budgetById = {};
+            var approvedIds = {};
             budSnap.forEach(function (doc) {
-              budgetById[doc.id] = doc.data() || {};
               withBudget++;
-              if ((doc.data() || {}).status === "approved") approved++;
+              var st = (doc.data() || {}).status;
+              if (st === "approved") {
+                approved++;
+                approvedIds[doc.id] = true;
+              } else {
+                draft++;
+              }
             });
             var noBudget = Math.max(0, projectCount - withBudget);
             var expenseCount = expSnap.size;
-            var modVal = document.getElementById("stat-modules-value");
-            if (modVal) {
-              modVal.textContent =
-                projectCount +
-                " " +
-                (currentLang === "en" ? "contracts" : "عقد") +
+            var totalSpent = 0;
+            var expenseProjectIds = {};
+            expSnap.forEach(function (doc) {
+              var ed = doc.data() || {};
+              var a = typeof ed.amount === "number" ? ed.amount : parseFloat(ed.amount);
+              if (!isNaN(a)) totalSpent += a;
+              if (ed.projectId) expenseProjectIds[String(ed.projectId)] = true;
+            });
+            var expensesWithoutApproved = 0;
+            Object.keys(expenseProjectIds).forEach(function (pid) {
+              if (!approvedIds[pid]) expensesWithoutApproved++;
+            });
+
+            setDashKpi("dash-kpi-companies", companyCount);
+            setDashKpi("dash-kpi-contracts", projectCount);
+            setDashKpi("dash-kpi-approved", approved);
+            setDashKpi("dash-kpi-no-budget", noBudget);
+            setDashKpi("dash-kpi-expenses", expenseCount);
+            setDashKpi("dash-kpi-spent", totalSpent > 0 ? formatBudgetAmount(totalSpent) : "0");
+            setDashKpi("dash-kpi-draft", draft);
+            setDashKpi("dash-kpi-approved-inline", approved);
+            setDashKpi("dash-kpi-none-budget", noBudget);
+
+            var pct = projectCount > 0 ? Math.round((approved / projectCount) * 100) : 0;
+            var pctEl = document.getElementById("dash-progress-approved-pct");
+            if (pctEl) pctEl.textContent = pct + "%";
+            var bar = document.getElementById("dash-progress-approved-bar");
+            if (bar) bar.style.width = pct + "%";
+
+            var cloudText = F.projectId || ui("dashboardCloudOk");
+            if (F.appSettings && F.appSettings.baseCurrencyCode) {
+              cloudText =
+                cloudText +
                 " · " +
-                companyCount +
-                " " +
-                (currentLang === "en" ? "companies" : "شركة");
+                String(F.appSettings.baseCurrencyCode).toUpperCase();
             }
-            var modHint = document.getElementById("stat-modules-hint");
-            if (modHint) {
-              modHint.textContent =
-                approved +
-                " " +
-                ui("dashboardStatBudgets") +
-                " · " +
-                noBudget +
-                " " +
-                ui("dashboardStatNoBudget");
+            updateDashboardCloudStatus(cloudText, "ok");
+
+            var alerts = [];
+            if (!setupOk) {
+              alerts.push({ type: "warn", text: ui("dashboardAlertSetup") });
             }
-            var repVal = document.getElementById("stat-reports-value");
-            if (repVal) {
-              repVal.textContent =
-                expenseCount + " " + (currentLang === "en" ? "expense entries" : "قيد مصروف");
+            if (projectCount === 0) {
+              alerts.push({ type: "info", text: ui("dashboardAlertNoContracts") });
             }
-            var n1 = document.getElementById("dashboard-note-1");
-            if (n1) {
-              n1.textContent =
-                (currentLang === "en" ? "Contracts: " : "العقود: ") +
-                projectCount +
-                " · " +
-                (currentLang === "en" ? "Companies: " : "الشركات: ") +
-                companyCount;
+            if (noBudget > 0) {
+              alerts.push({
+                type: "warn",
+                text:
+                  noBudget +
+                  " — " +
+                  ui("dashboardAlertNoBudget")
+              });
             }
-            var n2 = document.getElementById("dashboard-note-2");
-            if (n2) {
-              n2.textContent =
-                ui("dashboardStatBudgets") +
-                ": " +
-                approved +
-                " · " +
-                ui("dashboardStatNoBudget") +
-                ": " +
-                noBudget;
+            if (draft > 0) {
+              alerts.push({
+                type: "info",
+                text: draft + " — " + ui("dashboardAlertDraftBudget")
+              });
             }
+            if (expensesWithoutApproved > 0) {
+              alerts.push({ type: "warn", text: ui("dashboardAlertExpensesNoBudget") });
+            }
+            if (!alerts.length) {
+              alerts.push({ type: "ok", text: ui("dashboardAlertOk") });
+            }
+            renderDashboardAlerts(alerts);
           })
-          .catch(function () {});
+          .catch(function () {
+            updateDashboardCloudStatus(ui("dashboardCloudFail"), "error");
+            renderDashboardAlerts([{ type: "warn", text: ui("dashboardCloudFail") }]);
+          })
+          .then(function () {
+            if (loadEl) loadEl.setAttribute("hidden", "");
+          });
       }
+
+      (function wireDashboardShortcuts() {
+        document.querySelectorAll("[data-dash-nav]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var key = btn.getAttribute("data-dash-nav");
+            if (key) showScreen(key);
+          });
+        });
+      })();
 
       (function wireExpenseEditor() {
         var back = document.getElementById("expenses-back-btn");
