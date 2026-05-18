@@ -300,40 +300,55 @@
 
         <!-- ===== SCREEN: PROJECTS ===== -->
         <section class="screen" id="screen-projects" data-title="المشاريع">
-          <div class="placeholder-card placeholder-card--fill">
-            <div class="page-head page-head--split">
+          <div class="placeholder-card placeholder-card--fill list-screen projects-screen">
+            <header class="page-head page-head--split">
               <div class="page-head__text">
                 <h2 id="projects-title">المشاريع</h2>
-                <p id="projects-lead" class="currencies-lead"></p>
+                <p id="projects-lead" class="page-lead"></p>
               </div>
               <div class="page-head__actions">
                 <button type="button" class="btn btn--primary" id="projects-add-btn"></button>
               </div>
-            </div>
-            <div id="projects-alert" class="setup-error" role="alert" hidden></div>
+            </header>
+            <div id="projects-alert" class="setup-error list-screen-alert" role="alert" hidden></div>
             <div id="projects-no-setup" class="currencies-hint" hidden></div>
-            <div id="projects-loading" class="currencies-loading"></div>
-            <div id="projects-main" class="screen-body" hidden>
-              <div class="table-scroll">
-                <table class="data-table" style="min-width:860px" aria-label="المشاريع">
-                  <thead>
-                    <tr>
-                      <th id="projects-th-code" scope="col"></th>
-                      <th id="projects-th-contract" scope="col"></th>
-                      <th id="projects-th-name-ar" scope="col"></th>
-                      <th id="projects-th-name-en" scope="col"></th>
-                      <th id="projects-th-company" scope="col"></th>
-                      <th id="projects-th-currency" scope="col"></th>
-                      <th id="projects-th-status" scope="col"></th>
-                      <th id="projects-th-budget" scope="col"></th>
-                      <th id="projects-th-spent" scope="col"></th>
-                      <th id="projects-th-actions" scope="col"></th>
-                    </tr>
-                  </thead>
-                  <tbody id="projects-tbody"></tbody>
-                </table>
+            <div id="projects-loading" class="list-loading" hidden></div>
+            <div id="projects-content" class="list-screen__content" hidden>
+              <div class="list-panel projects-panel">
+                <div class="list-panel__head list-panel__head--compact">
+                  <div class="list-panel__title-row">
+                    <h3 class="list-panel__title" id="projects-panel-title"></h3>
+                    <p class="list-panel__meta" id="projects-count-meta" aria-live="polite"></p>
+                  </div>
+                </div>
+                <div id="projects-main" class="list-panel__body list-panel__body--table">
+                  <div class="table-scroll table-scroll--list projects-table-scroll" id="projects-table-wrap">
+                    <table class="data-table data-table--list data-table--projects projects-table" aria-labelledby="projects-panel-title">
+                      <thead>
+                        <tr>
+                          <th id="projects-th-code" scope="col" class="col-code"></th>
+                          <th id="projects-th-contract" scope="col" class="col-contract"></th>
+                          <th id="projects-th-name-ar" scope="col" class="col-name"></th>
+                          <th id="projects-th-name-en" scope="col" class="col-name-secondary"></th>
+                          <th id="projects-th-company" scope="col" class="col-company"></th>
+                          <th id="projects-th-currency" scope="col" class="col-currency"></th>
+                          <th id="projects-th-status" scope="col" class="col-status"></th>
+                          <th id="projects-th-budget" scope="col" class="col-budget"></th>
+                          <th id="projects-th-spent" scope="col" class="col-spent"></th>
+                          <th id="projects-th-actions" scope="col" class="col-actions"></th>
+                        </tr>
+                      </thead>
+                      <tbody id="projects-tbody"></tbody>
+                    </table>
+                  </div>
+                  <div id="projects-empty" class="list-empty" hidden>
+                    <span class="list-empty__icon" aria-hidden="true">&#128203;</span>
+                    <p class="list-empty__title" id="projects-empty-title"></p>
+                    <p class="list-empty__lead" id="projects-empty-lead"></p>
+                    <button type="button" class="btn btn--primary" id="projects-empty-add"></button>
+                  </div>
+                </div>
               </div>
-              <p id="projects-empty" class="currencies-hint" hidden></p>
             </div>
           </div>
         </section>
@@ -1305,6 +1320,9 @@
             dashboardStatCompanies: "الشركات",
             dashboardStatBudgets: "موازنات معتمدة",
             dashboardStatNoBudget: "عقود بلا موازنة",
+            projectsPanelTitle: "قائمة العقود",
+            projectsEmptyTitle: "لا توجد عقود",
+            projectsEmptyLead: "أضف أول عقد لمتابعة الموازنة والمصروفات.",
             projectsEmpty: "لا توجد مشاريع مسجّلة بعد.",
             projectsLoading: "جاري التحميل…",
             projectsNoSetup: "أكمل «إعداد أول تشغيل» وحدّد العملة الأساسية قبل إدارة المشاريع.",
@@ -1696,6 +1714,9 @@
             dashboardStatCompanies: "Companies",
             dashboardStatBudgets: "Approved budgets",
             dashboardStatNoBudget: "Contracts without budget",
+            projectsPanelTitle: "Contract list",
+            projectsEmptyTitle: "No contracts yet",
+            projectsEmptyLead: "Add your first contract to track budget and expenses.",
             projectsEmpty: "No projects yet.",
             projectsLoading: "Loading…",
             projectsNoSetup: "Complete first-run setup and set a base currency before managing projects.",
@@ -2066,8 +2087,14 @@
           if (pload) pload.textContent = ui("projectsLoading");
           var padd = document.getElementById("projects-add-btn");
           if (padd) padd.textContent = ui("projectsAddBtn");
-          var pempty = document.getElementById("projects-empty");
-          if (pempty) pempty.textContent = ui("projectsEmpty");
+          var ppt = document.getElementById("projects-panel-title");
+          if (ppt) ppt.textContent = ui("projectsPanelTitle");
+          var pet = document.getElementById("projects-empty-title");
+          if (pet) pet.textContent = ui("projectsEmptyTitle");
+          var pel = document.getElementById("projects-empty-lead");
+          if (pel) pel.textContent = ui("projectsEmptyLead");
+          var pea = document.getElementById("projects-empty-add");
+          if (pea) pea.textContent = ui("projectsAddBtn");
           var pn = document.getElementById("projects-no-setup");
           if (pn) pn.textContent = ui("projectsNoSetup");
           var thpc = document.getElementById("projects-th-code");
@@ -6828,6 +6855,194 @@
         return k || "—";
       }
 
+      function projectStatusPillClass(st) {
+        var k = String(st || "active").trim();
+        if (k === "draft") return "project-status-pill project-status-pill--draft";
+        if (k === "on_hold") return "project-status-pill project-status-pill--hold";
+        if (k === "completed") return "project-status-pill project-status-pill--done";
+        return "project-status-pill project-status-pill--active";
+      }
+
+      function updateProjectsListMeta() {
+        var meta = document.getElementById("projects-count-meta");
+        if (!meta) return;
+        var total = (projectsScreenCache.rows || []).length;
+        if (!total) {
+          meta.textContent = "";
+          return;
+        }
+        meta.textContent =
+          currentLang === "en" ? total + " registered" : total + " مسجّل";
+      }
+
+      function syncProjectsViewState() {
+        var rows = projectsScreenCache.rows || [];
+        var hasRows = rows.length > 0;
+        var tableWrap = document.getElementById("projects-table-wrap");
+        var emptyEl = document.getElementById("projects-empty");
+        var mainEl = document.getElementById("projects-main");
+        if (tableWrap) {
+          if (hasRows) tableWrap.removeAttribute("hidden");
+          else tableWrap.setAttribute("hidden", "");
+        }
+        if (emptyEl) {
+          if (hasRows) emptyEl.setAttribute("hidden", "");
+          else emptyEl.removeAttribute("hidden");
+        }
+        if (mainEl) mainEl.classList.toggle("list-panel__body--empty", !hasRows);
+        updateProjectsListMeta();
+      }
+
+      function renderProjectsTable() {
+        var tbody = document.getElementById("projects-tbody");
+        if (!tbody) return;
+        var rows = projectsScreenCache.rows || [];
+        var companyMap = projectsScreenCache.companyMap || {};
+        var budgetMap = projectsScreenCache.budgetMap || {};
+        var spentMap = projectsScreenCache.spentMap || {};
+
+        tbody.innerHTML = "";
+        rows.forEach(function (row) {
+          var d = row.d;
+          var tr = document.createElement("tr");
+          tr.className = "projects-table-row";
+
+          var td1 = document.createElement("td");
+          td1.className = "col-code";
+          var codeSpan = document.createElement("span");
+          codeSpan.className = "cell-code";
+          markLatinNumberEl(codeSpan);
+          codeSpan.textContent = d.code != null && String(d.code).trim() ? String(d.code).trim() : "—";
+          td1.appendChild(codeSpan);
+
+          var td2 = document.createElement("td");
+          td2.className = "col-contract";
+          var contractSpan = document.createElement("span");
+          contractSpan.className = "cell-contract";
+          markLatinNumberEl(contractSpan);
+          contractSpan.textContent =
+            d.contractNo != null && String(d.contractNo).trim() ? String(d.contractNo).trim() : "—";
+          td2.appendChild(contractSpan);
+
+          var td3 = document.createElement("td");
+          td3.className = "col-name";
+          var nameAr = document.createElement("span");
+          nameAr.className = "cell-name-primary";
+          nameAr.textContent = d.nameAr != null && String(d.nameAr).trim() ? String(d.nameAr) : "—";
+          td3.appendChild(nameAr);
+
+          var td4 = document.createElement("td");
+          td4.className = "col-name-secondary";
+          var nameEn = d.nameEn != null && String(d.nameEn).trim() ? String(d.nameEn).trim() : "";
+          if (nameEn) {
+            var nameEnSpan = document.createElement("span");
+            nameEnSpan.className = "cell-name-secondary";
+            markLatinNumberEl(nameEnSpan);
+            nameEnSpan.textContent = nameEn;
+            td4.appendChild(nameEnSpan);
+          } else {
+            td4.classList.add("projects-cell-muted");
+            td4.textContent = "—";
+          }
+
+          var td5 = document.createElement("td");
+          td5.className = "col-company";
+          var cid = d.companyId != null ? String(d.companyId) : "";
+          td5.textContent = cid && companyMap[cid] ? companyMap[cid] : cid ? cid : "—";
+
+          var td6 = document.createElement("td");
+          td6.className = "col-currency";
+          var curSpan = document.createElement("span");
+          curSpan.className = "cell-currency";
+          markLatinNumberEl(curSpan);
+          curSpan.textContent =
+            d.currencyCode != null && String(d.currencyCode).trim()
+              ? String(d.currencyCode).toUpperCase()
+              : "—";
+          td6.appendChild(curSpan);
+
+          var td7 = document.createElement("td");
+          td7.className = "col-status";
+          var statusPill = document.createElement("span");
+          statusPill.className = projectStatusPillClass(d.status);
+          statusPill.textContent = projectStatusLabel(d.status);
+          td7.appendChild(statusPill);
+
+          var td8 = document.createElement("td");
+          td8.className = "col-budget budget-cell";
+          var binfo = budgetMap[row.id];
+          var bst = binfo ? binfo.status : "";
+          var badge = document.createElement("span");
+          badge.className = "budget-badge";
+          if (bst === "approved") {
+            badge.classList.add("budget-badge--approved");
+            badge.textContent = ui("budgetBadgeApproved");
+          } else if (bst === "draft" || binfo) {
+            badge.classList.add("budget-badge--draft");
+            badge.textContent = ui("budgetBadgeDraft");
+          } else {
+            badge.classList.add("budget-badge--none");
+            badge.textContent = ui("budgetBadgeNone");
+          }
+          td8.appendChild(badge);
+          if (binfo && binfo.totalAmount > 0) {
+            var bamt = document.createElement("div");
+            bamt.className = "budget-cell__amount";
+            markLatinNumberEl(bamt);
+            bamt.textContent = formatBudgetAmount(binfo.totalAmount);
+            td8.appendChild(bamt);
+          }
+
+          var tdSpent = document.createElement("td");
+          tdSpent.className = "col-spent projects-spent-cell";
+          var spentVal = spentMap[row.id] || 0;
+          markLatinNumberEl(tdSpent);
+          tdSpent.textContent = spentVal > 0 ? formatBudgetAmount(spentVal) : "—";
+          if (spentVal <= 0) tdSpent.classList.add("projects-cell-muted");
+
+          var td9 = document.createElement("td");
+          td9.className = "table-actions col-actions projects-row-actions";
+          var btnExp = document.createElement("button");
+          btnExp.type = "button";
+          btnExp.className = "btn btn--small btn--expense projects-btn-expense";
+          btnExp.textContent = ui("projectsExpensesBtn");
+          btnExp.setAttribute("data-project-expenses", row.id);
+          var btnBud = document.createElement("button");
+          btnBud.type = "button";
+          btnBud.className = "btn btn--small btn--budget projects-btn-budget";
+          btnBud.textContent = ui("projectsBudgetBtn");
+          btnBud.setAttribute("data-project-budget", row.id);
+          var btnEd = document.createElement("button");
+          btnEd.type = "button";
+          btnEd.className = "btn btn--small btn--ghost projects-btn-edit";
+          btnEd.textContent = ui("projectsEdit");
+          btnEd.setAttribute("data-project-edit", row.id);
+          var btnDel = document.createElement("button");
+          btnDel.type = "button";
+          btnDel.className = "btn btn--small btn--danger projects-btn-delete";
+          btnDel.textContent = ui("projectsDelete");
+          btnDel.setAttribute("data-project-delete", row.id);
+          td9.appendChild(btnExp);
+          td9.appendChild(btnBud);
+          td9.appendChild(btnEd);
+          td9.appendChild(btnDel);
+
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          tr.appendChild(td3);
+          tr.appendChild(td4);
+          tr.appendChild(td5);
+          tr.appendChild(td6);
+          tr.appendChild(td7);
+          tr.appendChild(td8);
+          tr.appendChild(tdSpent);
+          tr.appendChild(td9);
+          tbody.appendChild(tr);
+        });
+
+        syncProjectsViewState();
+      }
+
       function showProjectModalError(msg) {
         var el = document.getElementById("project-modal-error");
         if (!el) return;
@@ -7007,8 +7222,7 @@
         var F = window.AppFirebase;
         var alertEl = document.getElementById("projects-alert");
         var loadingEl = document.getElementById("projects-loading");
-        var mainEl = document.getElementById("projects-main");
-        var emptyEl = document.getElementById("projects-empty");
+        var contentEl = document.getElementById("projects-content");
         var noSetupEl = document.getElementById("projects-no-setup");
         var tbody = document.getElementById("projects-tbody");
 
@@ -7022,7 +7236,7 @@
         if (!F || !F.db) {
           showAlert(currentLang === "en" ? "Firebase not ready." : "Firebase غير جاهز.");
           if (loadingEl) loadingEl.setAttribute("hidden", "");
-          if (mainEl) mainEl.setAttribute("hidden", "");
+          if (contentEl) contentEl.setAttribute("hidden", "");
           if (noSetupEl) noSetupEl.setAttribute("hidden", "");
           return;
         }
@@ -7039,9 +7253,8 @@
             if (!setupOk) {
               showAlert("");
               if (loadingEl) loadingEl.setAttribute("hidden", "");
-              if (mainEl) mainEl.setAttribute("hidden", "");
+              if (contentEl) contentEl.setAttribute("hidden", "");
               if (noSetupEl) noSetupEl.removeAttribute("hidden");
-              if (emptyEl) emptyEl.setAttribute("hidden", "");
               return null;
             }
             if (noSetupEl) noSetupEl.setAttribute("hidden", "");
@@ -7050,8 +7263,7 @@
               loadingEl.removeAttribute("hidden");
               loadingEl.textContent = ui("projectsLoading");
             }
-            if (mainEl) mainEl.setAttribute("hidden", "");
-            if (emptyEl) emptyEl.setAttribute("hidden", "");
+            if (contentEl) contentEl.setAttribute("hidden", "");
             return Promise.all([
               F.db.collection("projects").get(),
               F.db.collection("companies").get(),
@@ -7129,103 +7341,8 @@
                 : "";
 
             if (!tbody) return;
-            tbody.innerHTML = "";
-
-            rows.forEach(function (row) {
-              var d = row.d;
-              var tr = document.createElement("tr");
-              var td1 = document.createElement("td");
-              td1.setAttribute("dir", "ltr");
-              td1.textContent = d.code != null && String(d.code).trim() ? String(d.code).trim() : "—";
-              var td2 = document.createElement("td");
-              td2.setAttribute("dir", "ltr");
-              td2.textContent =
-                d.contractNo != null && String(d.contractNo).trim() ? String(d.contractNo).trim() : "—";
-              var td3 = document.createElement("td");
-              td3.textContent = d.nameAr != null && String(d.nameAr).trim() ? String(d.nameAr) : "—";
-              var td4 = document.createElement("td");
-              td4.textContent = d.nameEn != null && String(d.nameEn).trim() ? String(d.nameEn) : "—";
-              var td5 = document.createElement("td");
-              var cid = d.companyId != null ? String(d.companyId) : "";
-              td5.textContent = cid && companyMap[cid] ? companyMap[cid] : cid ? cid : "—";
-              var td6 = document.createElement("td");
-              td6.setAttribute("dir", "ltr");
-              td6.textContent =
-                d.currencyCode != null && String(d.currencyCode).trim()
-                  ? String(d.currencyCode).toUpperCase()
-                  : "—";
-              var td7 = document.createElement("td");
-              td7.textContent = projectStatusLabel(d.status);
-              var td8 = document.createElement("td");
-              td8.className = "budget-cell";
-              var binfo = budgetMap[row.id];
-              var bst = binfo ? binfo.status : "";
-              var badge = document.createElement("span");
-              badge.className = "budget-badge";
-              if (bst === "approved") {
-                badge.classList.add("budget-badge--approved");
-                badge.textContent = ui("budgetBadgeApproved");
-              } else if (bst === "draft" || binfo) {
-                badge.classList.add("budget-badge--draft");
-                badge.textContent = ui("budgetBadgeDraft");
-              } else {
-                badge.classList.add("budget-badge--none");
-                badge.textContent = ui("budgetBadgeNone");
-              }
-              td8.appendChild(badge);
-              if (binfo && binfo.totalAmount > 0) {
-                var bamt = document.createElement("div");
-                bamt.className = "budget-cell__amount";
-                bamt.setAttribute("dir", "ltr");
-                bamt.textContent = formatBudgetAmount(binfo.totalAmount);
-                td8.appendChild(bamt);
-              }
-              var tdSpent = document.createElement("td");
-              tdSpent.className = "budget-cell";
-              tdSpent.setAttribute("dir", "ltr");
-              var spentVal = spentMap[row.id] || 0;
-              tdSpent.textContent = spentVal > 0 ? formatBudgetAmount(spentVal) : "—";
-              var td9 = document.createElement("td");
-              td9.className = "table-actions";
-              var btnExp = document.createElement("button");
-              btnExp.type = "button";
-              btnExp.className = "btn btn--small btn--expense";
-              btnExp.textContent = ui("projectsExpensesBtn");
-              btnExp.setAttribute("data-project-expenses", row.id);
-              var btnBud = document.createElement("button");
-              btnBud.type = "button";
-              btnBud.className = "btn btn--small btn--budget";
-              btnBud.textContent = ui("projectsBudgetBtn");
-              btnBud.setAttribute("data-project-budget", row.id);
-              var btnEd = document.createElement("button");
-              btnEd.type = "button";
-              btnEd.className = "btn btn--small";
-              btnEd.textContent = ui("projectsEdit");
-              btnEd.setAttribute("data-project-edit", row.id);
-              var btnDel = document.createElement("button");
-              btnDel.type = "button";
-              btnDel.className = "btn btn--small btn--danger";
-              btnDel.textContent = ui("projectsDelete");
-              btnDel.setAttribute("data-project-delete", row.id);
-              td9.appendChild(btnExp);
-              td9.appendChild(btnBud);
-              td9.appendChild(btnEd);
-              td9.appendChild(btnDel);
-              tr.appendChild(td1);
-              tr.appendChild(td2);
-              tr.appendChild(td3);
-              tr.appendChild(td4);
-              tr.appendChild(td5);
-              tr.appendChild(td6);
-              tr.appendChild(td7);
-              tr.appendChild(td8);
-              tr.appendChild(tdSpent);
-              tr.appendChild(td9);
-              tbody.appendChild(tr);
-            });
-
-            if (emptyEl) emptyEl.hidden = rows.length > 0;
-            if (mainEl) mainEl.removeAttribute("hidden");
+            renderProjectsTable();
+            if (contentEl) contentEl.removeAttribute("hidden");
 
             tbody.onclick = function (ev) {
               var t = ev.target;
@@ -7285,6 +7402,12 @@
       document.getElementById("projects-add-btn").addEventListener("click", function () {
         openProjectModalAdd();
       });
+      var projectsEmptyAdd = document.getElementById("projects-empty-add");
+      if (projectsEmptyAdd) {
+        projectsEmptyAdd.addEventListener("click", function () {
+          openProjectModalAdd();
+        });
+      }
 
       document.getElementById("project-modal-cancel").addEventListener("click", function () {
         closeProjectModal();
